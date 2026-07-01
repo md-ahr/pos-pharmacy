@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\PharmacyRole;
 use Database\Factories\UserFactory;
 use HasinHayder\Tyro\Concerns\HasTyroRoles;
 use HasinHayder\TyroLogin\Traits\HasTwoFactorAuth;
@@ -43,5 +44,24 @@ class User extends Authenticatable
     public function branch(): BelongsTo
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function pharmacyRole(): ?PharmacyRole
+    {
+        return $this->role !== null ? PharmacyRole::tryFrom($this->role) : null;
+    }
+
+    public function hasTenantWideAccess(): bool
+    {
+        if ($this->branch_id !== null) {
+            return false;
+        }
+
+        return $this->pharmacyRole()?->hasTenantWideAccess() ?? false;
+    }
+
+    public function canSwitchBranches(): bool
+    {
+        return $this->tenant_id !== null && $this->hasTenantWideAccess();
     }
 }

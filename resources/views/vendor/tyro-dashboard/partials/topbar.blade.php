@@ -12,6 +12,12 @@
     </div>
 
     <div class="topbar-right">
+        @auth
+            @if(auth()->user()->tenant_id)
+                <livewire:dashboard.branch-switcher />
+            @endif
+        @endauth
+
         <!-- Theme Toggle -->
         <button type="button" class="topbar-btn" onclick="toggleTheme()" aria-label="Toggle theme">
             <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">

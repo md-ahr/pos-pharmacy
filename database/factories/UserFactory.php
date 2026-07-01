@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Enums\PharmacyRole;
 use App\Models\Branch;
 use App\Models\Tenant;
 use App\Models\User;
+use HasinHayder\Tyro\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -49,10 +51,54 @@ class UserFactory extends Factory
         ]);
     }
 
-    public function owner(Tenant $tenant, Branch $branch): static
+    public function owner(Tenant $tenant): static
+    {
+        return $this->forTenant($tenant)->state(fn (array $attributes) => [
+            'role' => PharmacyRole::Owner->value,
+            'branch_id' => null,
+        ])->afterCreating(function (User $user): void {
+            $this->assignTyroRole($user, PharmacyRole::Owner->value);
+        });
+    }
+
+    public function manager(Tenant $tenant, ?Branch $branch = null): static
     {
         return $this->forTenant($tenant, $branch)->state(fn (array $attributes) => [
-            'role' => 'owner',
-        ]);
+            'role' => PharmacyRole::Manager->value,
+            'branch_id' => $branch?->id,
+        ])->afterCreating(function (User $user): void {
+            $this->assignTyroRole($user, PharmacyRole::Manager->value);
+        });
+    }
+
+    public function pharmacist(Tenant $tenant, Branch $branch): static
+    {
+        return $this->forTenant($tenant, $branch)->state(fn (array $attributes) => [
+            'role' => PharmacyRole::Pharmacist->value,
+        ])->afterCreating(function (User $user): void {
+            $this->assignTyroRole($user, PharmacyRole::Pharmacist->value);
+        });
+    }
+
+    public function cashier(Tenant $tenant, Branch $branch): static
+    {
+        return $this->forTenant($tenant, $branch)->state(fn (array $attributes) => [
+            'role' => PharmacyRole::Cashier->value,
+        ])->afterCreating(function (User $user): void {
+            $this->assignTyroRole($user, PharmacyRole::Cashier->value);
+        });
+    }
+
+    protected function assignTyroRole(User $user, string $slug): void
+    {
+        if (! method_exists($user, 'assignRole')) {
+            return;
+        }
+
+        $role = Role::query()->where('slug', $slug)->first();
+
+        if ($role !== null) {
+            $user->assignRole($role);
+        }
     }
 }

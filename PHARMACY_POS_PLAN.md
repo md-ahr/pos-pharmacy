@@ -295,16 +295,16 @@ tests/
 - [x] Factories + seeders for dev data (sample tenant, products, batches, stock)
 
 ### Phase 3 — Auth, Roles & Registration (built on Tyro)
-- [ ] Extend Tyro's existing login/register controllers and views rather than replacing them —
+- [x] Extend Tyro's existing login/register controllers and views rather than replacing them —
       add `tenant_id`/`branch_id` capture and assignment
-- [ ] Build self-serve registration flow: on signup, atomically create Tenant → main Branch →
+- [x] Build self-serve registration flow: on signup, atomically create Tenant → main Branch →
       owner User inside a DB transaction; roll back fully on any failure
-- [ ] Wire pharmacy roles (owner/manager/pharmacist/cashier) into Tyro's role/permission system
+- [x] Wire pharmacy roles (owner/manager/pharmacist/cashier) into Tyro's role/permission system
       (extend it if it uses Spatie; adapt equivalently if it uses a custom mechanism)
-- [ ] Extend login to set tenant/branch context in session after auth
-- [ ] Role-based middleware/gates restricting POS, inventory, reports, and settings screens
-- [ ] "Switch branch" UI for tenant-wide users (owner/manager), using Tyro's UI components
-- [ ] Write `TenantIsolationTest` — verify no query ever leaks cross-tenant data
+- [x] Extend login to set tenant/branch context in session after auth
+- [x] Role-based middleware/gates restricting POS, inventory, reports, and settings screens
+- [x] "Switch branch" UI for tenant-wide users (owner/manager), using Tyro's UI components
+- [x] Write `TenantIsolationTest` — verify no query ever leaks cross-tenant data
 
 ### Phase 4 — Core Services (build before UI)
 - [ ] `UnitConversionService` — convert between product_unit and base_unit quantities

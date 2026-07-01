@@ -46,7 +46,7 @@ test('tenant scope filters products to authenticated user tenant', function () {
     $tenantA = Tenant::factory()->create();
     $tenantB = Tenant::factory()->create();
 
-    $userA = User::factory()->forTenant($tenantA)->create();
+    $user = User::factory()->forTenant($tenantA)->create();
     $categoryA = Category::factory()->create(['tenant_id' => $tenantA->id]);
     $manufacturerA = Manufacturer::factory()->create(['tenant_id' => $tenantA->id]);
     $categoryB = Category::factory()->create(['tenant_id' => $tenantB->id]);
@@ -66,7 +66,7 @@ test('tenant scope filters products to authenticated user tenant', function () {
         'name' => 'Tenant B Product',
     ]);
 
-    $this->actingAs($userA);
+    $this->actingAs($user);
 
     $visibleProducts = Product::all();
 

@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\Tenant;
 use App\Models\User;
+use HasinHayder\Tyro\Models\Role;
 use Illuminate\Database\Seeder;
 
 class PharmacySeeder extends Seeder
@@ -28,10 +29,15 @@ class PharmacySeeder extends Seeder
             'tenant_id' => $tenant->id,
         ]);
 
-        User::factory()->owner($tenant, $branch)->create([
+        $owner = User::factory()->owner($tenant)->create([
             'name' => 'Demo Owner',
             'email' => 'owner@pharmacy.test',
         ]);
+
+        $ownerRole = Role::query()->where('slug', 'owner')->first();
+        if ($ownerRole !== null) {
+            $owner->assignRole($ownerRole);
+        }
 
         $category = Category::factory()->create([
             'tenant_id' => $tenant->id,
