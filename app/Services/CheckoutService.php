@@ -24,6 +24,9 @@ class CheckoutService
         private UnitConversionService $unitConversion,
         private InvoiceNumberService $invoiceNumbers,
         private PosPricingService $pricing,
+        private TenantSettingsService $tenantSettings,
+        private RegisterShiftService $registerShifts,
+        private AuditLogService $auditLog,
     ) {}
 
     /**
@@ -46,6 +49,8 @@ class CheckoutService
             throw new InvalidArgumentException('Cart is empty.');
         }
 
+        $this->assertOpenRegisterShift($branch);
+
         return DB::transaction(function () use (
             $branch,
             $cashier,
@@ -60,7 +65,7 @@ class CheckoutService
         ): Sale {
             $tenant = Tenant::query()->findOrFail($branch->tenant_id);
             $pricedLines = $this->priceLines($branch, $lines);
-            $totals = $this->calculateTotals($pricedLines, $lines, $saleDiscount);
+            $totals = $this->calculateTotals($branch, $pricedLines, $lines, $saleDiscount);
 
             $this->assertPaymentsCoverTotal($payments, $totals['total']);
 
@@ -170,7 +175,15 @@ class CheckoutService
                 ]);
             }
 
-            return $sale->fresh(['items', 'payments', 'branch', 'cashier']);
+            $completedSale = $sale->fresh(['items', 'payments', 'branch', 'cashier']);
+
+            $this->auditLog->log('sale.completed', $completedSale, null, [
+                'invoice_no' => $completedSale->invoice_no,
+                'total' => $completedSale->total,
+                'branch_id' => $completedSale->branch_id,
+            ], $cashier);
+
+            return $completedSale;
         });
     }
 
@@ -203,7 +216,7 @@ class CheckoutService
         ): Sale {
             $tenant = Tenant::query()->findOrFail($branch->tenant_id);
             $pricedLines = $this->priceLines($branch, $lines);
-            $totals = $this->calculateTotals($pricedLines, $lines, $saleDiscount);
+            $totals = $this->calculateTotals($branch, $pricedLines, $lines, $saleDiscount);
 
             $sale = Sale::query()->create([
                 'tenant_id' => $tenant->id,
@@ -255,7 +268,7 @@ class CheckoutService
      * @param  list<array{line_subtotal: string, line_discount: string}>  $previewLines
      * @return array{subtotal: string, line_discount_total: string, net: string, tax: string, total: string}
      */
-    public function previewTotals(array $previewLines, string $saleDiscount = '0.00'): array
+    public function previewTotals(array $previewLines, string $saleDiscount = '0.00', Tenant|int|null $tenant = null): array
     {
         $subtotal = '0.00';
         $lineDiscountTotal = '0.00';
@@ -265,7 +278,12 @@ class CheckoutService
             $lineDiscountTotal = bcadd($lineDiscountTotal, $line['line_discount'], 2);
         }
 
-        return $this->calculateTotalsFromAmounts($subtotal, $lineDiscountTotal, $saleDiscount, $this->taxRate());
+        return $this->calculateTotalsFromAmounts(
+            $subtotal,
+            $lineDiscountTotal,
+            $saleDiscount,
+            $this->taxRateForTenant($tenant),
+        );
     }
 
     /**
@@ -314,7 +332,7 @@ class CheckoutService
      * @param  list<CartLine>  $cartLines
      * @return array{subtotal: string, line_discount_total: string, net: string, tax: string, total: string}
      */
-    private function calculateTotals(array $pricedLines, array $cartLines, string $saleDiscount): array
+    private function calculateTotals(Branch $branch, array $pricedLines, array $cartLines, string $saleDiscount): array
     {
         $subtotal = '0.00';
         $lineDiscountTotal = '0.00';
@@ -324,7 +342,12 @@ class CheckoutService
             $lineDiscountTotal = bcadd($lineDiscountTotal, $cartLines[$index]->lineDiscount, 2);
         }
 
-        return $this->calculateTotalsFromAmounts($subtotal, $lineDiscountTotal, $saleDiscount, $this->taxRate());
+        return $this->calculateTotalsFromAmounts(
+            $subtotal,
+            $lineDiscountTotal,
+            $saleDiscount,
+            $this->taxRateForTenant($branch->tenant_id),
+        );
     }
 
     /**
@@ -357,9 +380,19 @@ class CheckoutService
         return $sum;
     }
 
-    private function taxRate(): string
+    private function taxRateForTenant(Tenant|int|null $tenant = null): string
     {
-        return (string) config('pharmacy.pos.tax_rate', '0.00');
+        $tenantId = match (true) {
+            $tenant instanceof Tenant => $tenant->id,
+            is_int($tenant) => $tenant,
+            default => auth()->user()?->tenant_id,
+        };
+
+        if ($tenantId === null) {
+            return (string) config('pharmacy.pos.tax_rate', '0.00');
+        }
+
+        return $this->tenantSettings->taxRateFor($tenantId);
     }
 
     private function proportionalTax(string $lineNet, string $saleNet, string $saleTax): string
@@ -379,6 +412,17 @@ class CheckoutService
 
         if ($sale->branch_id !== $branch->id) {
             throw new InvalidArgumentException('Held sale belongs to a different branch.');
+        }
+    }
+
+    private function assertOpenRegisterShift(Branch $branch): void
+    {
+        if (! config('pharmacy.pos.require_open_shift', true)) {
+            return;
+        }
+
+        if ($this->registerShifts->openShiftForBranch($branch) === null) {
+            throw new InvalidArgumentException('Open a register shift before completing sales.');
         }
     }
 

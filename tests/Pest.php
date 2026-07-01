@@ -53,6 +53,7 @@ use App\Models\Stock;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Services\BranchContext;
+use App\Services\RegisterShiftService;
 
 function createPharmacyContext(?Tenant $tenant = null): array
 {
@@ -63,7 +64,22 @@ function createPharmacyContext(?Tenant $tenant = null): array
     test()->actingAs($user);
     app(BranchContext::class)->initialize($user, $branch->id);
 
+    if (config('pharmacy.pos.require_open_shift', true)) {
+        openRegisterShift($branch, $user);
+    }
+
     return compact('tenant', 'branch', 'user');
+}
+
+function openRegisterShift(Branch $branch, User $user, string $openingFloat = '100.00'): void
+{
+    $service = app(RegisterShiftService::class);
+
+    if ($service->openShiftForBranch($branch) !== null) {
+        return;
+    }
+
+    $service->openShift($branch, $user, $openingFloat);
 }
 
 function seedCheckoutProduct(Tenant $tenant, Branch $branch, array $overrides = []): Product

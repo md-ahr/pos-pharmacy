@@ -48,6 +48,12 @@ class TenantProvisioner
 
             $this->assignOwnerRole($user);
 
+            app(TenantSettingsService::class)->update($tenant, [
+                'default_branch_id' => $branch->id,
+            ]);
+
+            app(RegisterShiftService::class)->ensureRegister($branch);
+
             app(BranchContext::class)->initialize($user, $branch->id);
 
             return $user;

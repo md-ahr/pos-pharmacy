@@ -95,13 +95,21 @@
 </head>
 <body>
     <div class="receipt">
+        @unless($forPdf ?? false)
         <div class="toolbar">
             <button type="button" onclick="window.print()">Print receipt</button>
+            <a href="{{ route('pharmacy.pos.receipt.pdf', $sale) }}">
+                <button type="button">Download PDF</button>
+            </a>
             <button type="button" onclick="window.close()">Close</button>
         </div>
+        @endunless
 
         <div class="receipt-header">
             <h1>{{ $sale->tenant->name }}</h1>
+            @if(! empty($settings->receipt_header))
+                <p>{!! nl2br(e($settings->receipt_header)) !!}</p>
+            @endif
             <p>{{ $sale->branch->name }}</p>
             @if($sale->branch->address)
                 <p>{{ $sale->branch->address }}</p>
@@ -183,7 +191,11 @@
         </div>
 
         <div class="receipt-footer">
-            <p>Thank you for your purchase.</p>
+            @if(! empty($settings->receipt_footer))
+                <p>{!! nl2br(e($settings->receipt_footer)) !!}</p>
+            @else
+                <p>Thank you for your purchase.</p>
+            @endif
         </div>
     </div>
 </body>

@@ -15,6 +15,7 @@ class SaleRefundService
 {
     public function __construct(
         private StockDeductionService $stockDeduction,
+        private AuditLogService $auditLog,
     ) {}
 
     /**
@@ -63,11 +64,22 @@ class SaleRefundService
                 ->whereColumn('refunded_quantity', '<', 'quantity')
                 ->doesntExist();
 
+            $previousStatus = $sale->status;
+
             $sale->update([
                 'status' => $allRefunded ? SaleStatus::Refunded : SaleStatus::PartiallyRefunded,
             ]);
 
-            return $sale->fresh(['items']);
+            $refundedSale = $sale->fresh(['items']);
+
+            $this->auditLog->log('sale.refunded', $refundedSale, [
+                'status' => $previousStatus->value,
+            ], [
+                'status' => $refundedSale->status->value,
+                'sale_item_ids' => $saleItemIds,
+            ]);
+
+            return $refundedSale;
         });
     }
 

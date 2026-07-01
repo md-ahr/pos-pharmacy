@@ -84,7 +84,10 @@ test('owner can access settings route', function () {
     $this->actingAs($owner);
     app(BranchContext::class)->initialize($owner, $branch->id);
 
-    $this->get(route('pharmacy.settings'))->assertOk();
+    $this->get(route('pharmacy.settings'))
+        ->assertRedirect(route('pharmacy.settings.general'));
+
+    $this->get(route('pharmacy.settings.general'))->assertOk();
 });
 
 test('logout clears pharmacy session context', function () {

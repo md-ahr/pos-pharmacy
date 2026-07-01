@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 class StockAdjustmentService
 {
+    public function __construct(
+        private AuditLogService $auditLog,
+    ) {}
+
     public function adjust(
         Branch $branch,
         Product $product,
@@ -54,7 +58,7 @@ class StockAdjustmentService
 
             $stock->increment('quantity', $quantityDelta);
 
-            return StockAdjustment::query()->create([
+            $adjustment = StockAdjustment::query()->create([
                 'tenant_id' => $product->tenant_id,
                 'branch_id' => $branch->id,
                 'product_id' => $product->id,
@@ -64,6 +68,16 @@ class StockAdjustmentService
                 'adjusted_by' => $adjustedBy?->id,
                 'notes' => $notes,
             ]);
+
+            $this->auditLog->log('stock.adjusted', $adjustment, null, [
+                'product_id' => $product->id,
+                'batch_id' => $batch->id,
+                'quantity_delta' => $quantityDelta,
+                'reason' => $reason->value,
+                'branch_id' => $branch->id,
+            ], $adjustedBy);
+
+            return $adjustment;
         });
     }
 }

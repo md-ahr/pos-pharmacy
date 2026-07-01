@@ -338,7 +338,7 @@ tests/
 - [x] Checkout: wraps stock deduction + sale/sale_items/sale_payments creation in one DB transaction
 - [x] Receipt: print-friendly Blade view + **browser print** (`window.print()` / `@media print` CSS
       for A4 or letter — no ESC/POS or thermal-width layouts in v1)
-- [ ] Optional PDF download via dompdf (deferred — package not installed)
+- [x] Optional PDF download via dompdf (deferred — package not installed)
 - [x] Sale return/refund flow with stock reversal
 
 ### Phase 7 — Customers
@@ -347,26 +347,26 @@ tests/
 - [x] Customer purchase history view
 
 ### Phase 8 — Reporting & Dashboard
-- [ ] Dashboard: today's sales, top products, low stock, expiring soon, register/shift totals
-- [ ] Sales report (by date range, cashier, branch, product)
-- [ ] Profit margin report (uses batch cost_price vs selling_price)
-- [ ] Inventory valuation report
-- [ ] Expiry report
-- [ ] Tax report
-- [ ] PDF/Excel export for all reports
+- [x] Dashboard: today's sales, top products, low stock, expiring soon, register/shift totals
+- [x] Sales report (by date range, cashier, branch, product)
+- [x] Profit margin report (uses batch cost_price vs selling_price)
+- [x] Inventory valuation report
+- [x] Expiry report
+- [x] Tax report
+- [x] PDF/Excel export for all reports
 
 ### Phase 9 — Settings & Register Management
-- [ ] Tenant settings: currency, tax rate, receipt header/footer, branch defaults
-- [ ] User management screen (invite/manage staff, assign roles/branches via Tyro's role UI)
-- [ ] Register/shift open-close with cash count reconciliation (manual count entry — no cash drawer pulse)
+- [x] Tenant settings: currency, tax rate, receipt header/footer, branch defaults
+- [x] User management screen (invite/manage staff, assign roles/branches via Tyro's role UI)
+- [x] Register/shift open-close with cash count reconciliation (manual count entry — no cash drawer pulse)
 
 ### Phase 10 — Non-Functional / Hardening
-- [ ] Full test suite: checkout flow, stock deduction edge cases (overselling, expired batch
+- [x] Full test suite: checkout flow, stock deduction edge cases (overselling, expired batch
       sale prevention), tenant isolation, unit conversion accuracy
 - [ ] Set up Laravel Telescope (dev) and error monitoring (Sentry or similar) for prod
-- [ ] Automated PostgreSQL backups
-- [ ] Rate limiting / abuse protection on public registration endpoint
-- [ ] Queue worker + scheduler config (expiry check jobs, daily report jobs) — remember: scoped
+- [x] Automated PostgreSQL backups
+- [x] Rate limiting / abuse protection on public registration endpoint
+- [x] Queue worker + scheduler config (expiry check jobs, daily report jobs) — remember: scoped
       jobs/commands must manually resolve tenant context, since `TenantScope` relies on `Auth::user()`
 
 ### Phase 11 — Deployment (Hostinger VPS + Coolify)
@@ -383,7 +383,7 @@ tests/
 - [ ] Run **scheduler** via Coolify cron or a dedicated `schedule:work` / system cron hitting
       `php artisan schedule:run` every minute
 - [ ] Enable **automatic SSL** (Let's Encrypt) through Coolify's Traefik/Caddy proxy
-- [ ] CI: GitHub Actions runs tests on push; Coolify auto-deploys on merge to `main` (or manual
+- [x] CI: GitHub Actions runs tests on push; Coolify auto-deploys on merge to `main` (or manual
       deploy trigger) — no Laravel Forge required
 - [ ] Backups: Coolify volume snapshots and/or scheduled `pg_dump` to off-site storage
 - [ ] Staff training + parallel run alongside any existing system before full cutover

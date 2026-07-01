@@ -6,6 +6,7 @@ use Database\Factories\TenantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Tenant extends Model
 {
@@ -47,5 +48,15 @@ class Tenant extends Model
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function settings(): HasOne
+    {
+        return $this->hasOne(TenantSetting::class);
+    }
+
+    public function registers(): HasMany
+    {
+        return $this->hasMany(Register::class);
     }
 }

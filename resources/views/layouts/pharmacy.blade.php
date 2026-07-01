@@ -21,6 +21,14 @@
     @include('pharmacy.partials.customers-nav')
 @endif
 
+@if(isset($nav) && $nav === 'reports')
+    @include('pharmacy.partials.reports-nav')
+@endif
+
+@if(isset($nav) && $nav === 'settings')
+    @include('pharmacy.partials.settings-nav')
+@endif
+
 {{ $slot ?? '' }}
 @hasSection('pharmacy-content')
     @yield('pharmacy-content')

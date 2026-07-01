@@ -4,8 +4,10 @@ use App\Data\CartLine;
 use App\Data\PaymentLine;
 use App\Enums\PaymentMethod;
 use App\Enums\SaleStatus;
+use App\Models\AuditLog;
 use App\Models\Batch;
 use App\Models\ProductUnit;
+use App\Models\RegisterShift;
 use App\Models\Stock;
 use App\Models\User;
 use App\Services\CheckoutService;
@@ -152,4 +154,79 @@ test('receipt is available for completed sales in the same tenant', function () 
         ->assertOk()
         ->assertSee($sale->invoice_no)
         ->assertSee($product->name);
+});
+
+test('receipt pdf can be downloaded for completed sales', function () {
+    ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
+    $product = seedCheckoutProduct($tenant, $branch);
+
+    $sale = app(CheckoutService::class)->complete(
+        branch: $branch,
+        cashier: $user,
+        lines: [new CartLine(productId: $product->id, productUnitId: null, quantity: 1)],
+        payments: [new PaymentLine(PaymentMethod::Cash, '20.00')],
+    );
+
+    $this->actingAs($user)
+        ->get(route('pharmacy.pos.receipt.pdf', $sale))
+        ->assertOk()
+        ->assertHeader('content-type', 'application/pdf');
+});
+
+test('checkout requires an open register shift when configured', function () {
+    config(['pharmacy.pos.require_open_shift' => true]);
+
+    ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
+    $product = seedCheckoutProduct($tenant, $branch);
+
+    RegisterShift::query()->delete();
+
+    app(CheckoutService::class)->complete(
+        branch: $branch,
+        cashier: $user,
+        lines: [new CartLine(productId: $product->id, productUnitId: null, quantity: 1)],
+        payments: [new PaymentLine(PaymentMethod::Cash, '20.00')],
+    );
+})->throws(InvalidArgumentException::class, 'Open a register shift');
+
+test('partial refund restores stock for selected items only', function () {
+    ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
+    $productA = seedCheckoutProduct($tenant, $branch, ['name' => 'Product A']);
+    $productB = seedCheckoutProduct($tenant, $branch, ['name' => 'Product B']);
+
+    $sale = app(CheckoutService::class)->complete(
+        branch: $branch,
+        cashier: $user,
+        lines: [
+            new CartLine(productId: $productA->id, productUnitId: null, quantity: 2),
+            new CartLine(productId: $productB->id, productUnitId: null, quantity: 3),
+        ],
+        payments: [new PaymentLine(PaymentMethod::Cash, '200.00')],
+    );
+
+    expect(Stock::query()->sum('quantity'))->toBe(195);
+
+    $firstItemId = $sale->items->first()->id;
+
+    $refunded = app(SaleRefundService::class)->refund($sale, $branch, [$firstItemId]);
+
+    expect($refunded->status)->toBe(SaleStatus::PartiallyRefunded)
+        ->and(Stock::query()->sum('quantity'))->toBe(197);
+});
+
+test('completed sale writes an audit log entry', function () {
+    ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
+    $product = seedCheckoutProduct($tenant, $branch);
+
+    $sale = app(CheckoutService::class)->complete(
+        branch: $branch,
+        cashier: $user,
+        lines: [new CartLine(productId: $product->id, productUnitId: null, quantity: 1)],
+        payments: [new PaymentLine(PaymentMethod::Cash, '20.00')],
+    );
+
+    expect(AuditLog::query()
+        ->where('action', 'sale.completed')
+        ->where('auditable_id', $sale->id)
+        ->exists())->toBeTrue();
 });

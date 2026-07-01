@@ -48,4 +48,14 @@ class Branch extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function registers(): HasMany
+    {
+        return $this->hasMany(Register::class);
+    }
+
+    public function registerShifts(): HasMany
+    {
+        return $this->hasMany(RegisterShift::class);
+    }
 }
