@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\SaleReceiptController;
+use App\Livewire\Customers\CustomerForm;
+use App\Livewire\Customers\CustomerShow;
+use App\Livewire\Customers\CustomersIndex;
 use App\Livewire\Dashboard\Welcome;
 use App\Livewire\Inventory\BatchIntake;
 use App\Livewire\Inventory\ProductForm;
@@ -41,6 +44,13 @@ Route::middleware(['auth', 'pharmacy.context'])->group(function (): void {
     Route::get('/pos/receipt/{sale}', [SaleReceiptController::class, 'show'])
         ->middleware('privilege:pos.access')
         ->name('pharmacy.pos.receipt');
+
+    Route::middleware('privilege:pos.access')->prefix('customers')->group(function (): void {
+        Route::get('/', CustomersIndex::class)->name('pharmacy.customers');
+        Route::get('/create', CustomerForm::class)->name('pharmacy.customers.create');
+        Route::get('/{customer}/edit', CustomerForm::class)->name('pharmacy.customers.edit');
+        Route::get('/{customer}', CustomerShow::class)->name('pharmacy.customers.show');
+    });
 
     Route::middleware('privilege:inventory.manage')->prefix('inventory')->group(function (): void {
         Route::get('/', function () {

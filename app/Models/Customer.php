@@ -25,4 +25,21 @@ class Customer extends Model
     {
         return $this->hasMany(Sale::class);
     }
+
+    public function displayName(): string
+    {
+        if ($this->name !== null && $this->name !== '') {
+            return $this->name;
+        }
+
+        if ($this->phone !== null && $this->phone !== '') {
+            return $this->phone;
+        }
+
+        if ($this->email !== null && $this->email !== '') {
+            return $this->email;
+        }
+
+        return 'Walk-in customer';
+    }
 }

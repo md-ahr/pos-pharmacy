@@ -17,6 +17,10 @@
     @include('pharmacy.partials.inventory-nav')
 @endif
 
+@if(isset($nav) && $nav === 'customers')
+    @include('pharmacy.partials.customers-nav')
+@endif
+
 {{ $slot ?? '' }}
 @hasSection('pharmacy-content')
     @yield('pharmacy-content')

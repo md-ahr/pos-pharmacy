@@ -29,6 +29,7 @@
                 </p>
             </div>
             <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <a href="{{ route('pharmacy.customers') }}" class="btn btn-secondary btn-sm">Customers</a>
                 <button type="button" class="btn btn-secondary btn-sm" wire:click="clearCart">Clear (Esc)</button>
                 <button type="button" class="btn btn-secondary btn-sm" wire:click="holdSale" @disabled(!$branch || count($cart) === 0)>Hold Sale</button>
                 <button type="button" class="btn btn-primary btn-sm" wire:click="openPayment" @disabled(!$branch || count($cart) === 0)>Checkout (F4)</button>
@@ -148,6 +149,61 @@
         </div>
 
         <div style="display:grid; gap:1rem;">
+            <div class="card">
+                <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 class="card-title">Customer</h3>
+                    <a href="{{ route('pharmacy.customers.create') }}" class="btn btn-ghost btn-sm">New</a>
+                </div>
+                <div class="card-body" style="display:grid; gap:0.75rem;">
+                    @if($selectedCustomer)
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+                            <div>
+                                <strong>{{ $selectedCustomer->displayName() }}</strong>
+                                @if($selectedCustomer->phone)
+                                    <div class="text-muted" style="font-size:0.875rem;">{{ $selectedCustomer->phone }}</div>
+                                @endif
+                            </div>
+                            <div style="display:flex; gap:0.5rem;">
+                                <a href="{{ route('pharmacy.customers.show', $selectedCustomer) }}" class="btn btn-ghost btn-sm">History</a>
+                                <button type="button" class="btn btn-secondary btn-sm" wire:click="clearCustomer">Clear</button>
+                            </div>
+                        </div>
+                    @else
+                        <div>
+                            <label class="form-label" for="customer-search">Attach customer (optional)</label>
+                            <input
+                                id="customer-search"
+                                type="search"
+                                wire:model.live.debounce.250ms="customerSearch"
+                                class="form-input"
+                                placeholder="Search name, phone, or email..."
+                                autocomplete="off"
+                            >
+                            <p class="text-muted" style="margin-top:0.5rem; font-size:0.875rem;">Leave empty for anonymous walk-in checkout.</p>
+                        </div>
+                        @if($customerSearch !== '' && $customerSearchResults->isNotEmpty())
+                            <div style="border:1px solid var(--border-color,#eee); border-radius:0.375rem; overflow:hidden;">
+                                @foreach($customerSearchResults as $customer)
+                                    <button
+                                        type="button"
+                                        wire:key="customer-search-{{ $customer->id }}"
+                                        wire:click="selectCustomer({{ $customer->id }})"
+                                        style="display:block; width:100%; text-align:left; padding:0.75rem 1rem; border:0; border-bottom:1px solid var(--border-color,#eee); background:transparent; cursor:pointer;"
+                                    >
+                                        <strong>{{ $customer->displayName() }}</strong>
+                                        @if($customer->phone)
+                                            <span class="text-muted" style="font-size:0.875rem;"> · {{ $customer->phone }}</span>
+                                        @endif
+                                    </button>
+                                @endforeach
+                            </div>
+                        @elseif($customerSearch !== '')
+                            <div class="text-muted" style="font-size:0.875rem;">No customers found.</div>
+                        @endif
+                    @endif
+                </div>
+            </div>
+
             <div class="card">
                 <div class="card-header"><h3 class="card-title">Cart</h3></div>
                 <div class="card-body" style="padding:0;">

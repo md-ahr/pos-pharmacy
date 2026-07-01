@@ -44,7 +44,12 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+use App\Models\Batch;
 use App\Models\Branch;
+use App\Models\Category;
+use App\Models\Manufacturer;
+use App\Models\Product;
+use App\Models\Stock;
 use App\Models\Tenant;
 use App\Models\User;
 use App\Services\BranchContext;
@@ -61,7 +66,33 @@ function createPharmacyContext(?Tenant $tenant = null): array
     return compact('tenant', 'branch', 'user');
 }
 
-function something()
+function seedCheckoutProduct(Tenant $tenant, Branch $branch, array $overrides = []): Product
 {
-    // ..
+    $category = Category::factory()->create(['tenant_id' => $tenant->id]);
+    $manufacturer = Manufacturer::factory()->create(['tenant_id' => $tenant->id]);
+
+    $product = Product::factory()->create(array_merge([
+        'tenant_id' => $tenant->id,
+        'category_id' => $category->id,
+        'manufacturer_id' => $manufacturer->id,
+        'name' => 'Checkout Medicine',
+        'base_unit' => 'tablet',
+    ], $overrides));
+
+    $batch = Batch::factory()->forProduct($product)->create([
+        'tenant_id' => $tenant->id,
+        'batch_no' => 'B-001',
+        'expiry_date' => now()->addMonths(6),
+        'selling_price' => '10.00',
+    ]);
+
+    Stock::factory()->create([
+        'tenant_id' => $tenant->id,
+        'branch_id' => $branch->id,
+        'product_id' => $product->id,
+        'batch_id' => $batch->id,
+        'quantity' => 100,
+    ]);
+
+    return $product->fresh(['units', 'batches']);
 }

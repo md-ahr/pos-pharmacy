@@ -6,11 +6,13 @@ use App\Data\CartLine;
 use App\Data\PaymentLine;
 use App\Enums\PaymentMethod;
 use App\Enums\SaleStatus;
+use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductUnit;
 use App\Models\Sale;
 use App\Services\BranchContext;
 use App\Services\CheckoutService;
+use App\Services\CustomerSearchService;
 use App\Services\PosPricingService;
 use App\Services\ProductSearchService;
 use App\Services\SaleRefundService;
@@ -49,6 +51,22 @@ class SaleScreen extends Component
     public ?int $completedSaleId = null;
 
     public ?int $refundSaleId = null;
+
+    public ?int $customerId = null;
+
+    public string $customerSearch = '';
+
+    public function selectCustomer(int $customerId): void
+    {
+        $this->customerId = Customer::query()->findOrFail($customerId)->id;
+        $this->customerSearch = '';
+    }
+
+    public function clearCustomer(): void
+    {
+        $this->customerId = null;
+        $this->customerSearch = '';
+    }
 
     public function updatedSearch(ProductSearchService $searchService): void
     {
@@ -265,6 +283,7 @@ class SaleScreen extends Component
                 prescriptionRequired: $this->prescriptionRequired,
                 prescriberName: $this->prescriberName !== '' ? $this->prescriberName : null,
                 prescriberRegNo: $this->prescriberRegNo !== '' ? $this->prescriberRegNo : null,
+                customerId: $this->customerId,
                 heldSale: $heldSale,
             );
 
@@ -302,6 +321,7 @@ class SaleScreen extends Component
                 prescriptionRequired: $this->prescriptionRequired,
                 prescriberName: $this->prescriberName !== '' ? $this->prescriberName : null,
                 prescriberRegNo: $this->prescriberRegNo !== '' ? $this->prescriberRegNo : null,
+                customerId: $this->customerId,
             );
 
             $this->resetCart();
@@ -324,6 +344,7 @@ class SaleScreen extends Component
 
         $this->resetCart();
         $this->heldSaleId = $sale->id;
+        $this->customerId = $sale->customer_id;
         $this->saleDiscount = '0.00';
         $this->prescriptionRequired = $sale->prescription_required;
         $this->prescriberName = (string) ($sale->prescriber_name ?? '');
@@ -415,10 +436,16 @@ class SaleScreen extends Component
         return bccomp($remaining, '0.00', 2) > 0 ? $remaining : '0.00';
     }
 
-    public function render(ProductSearchService $searchService, BranchContext $branchContext): View
+    public function render(ProductSearchService $searchService, CustomerSearchService $customerSearchService, BranchContext $branchContext): View
     {
         $branch = $branchContext->activeBranch();
         $results = $this->search !== '' ? $searchService->search($this->search) : collect();
+        $customerResults = $this->customerSearch !== '' && $this->customerId === null
+            ? $customerSearchService->search($this->customerSearch)
+            : collect();
+        $selectedCustomer = $this->customerId !== null
+            ? Customer::query()->find($this->customerId)
+            : null;
 
         $heldSales = $branch !== null
             ? Sale::query()
@@ -440,6 +467,8 @@ class SaleScreen extends Component
 
         return view('livewire.pos.sale-screen', [
             'searchResults' => $results,
+            'customerSearchResults' => $customerResults,
+            'selectedCustomer' => $selectedCustomer,
             'heldSales' => $heldSales,
             'recentSales' => $recentSales,
             'paymentMethods' => PaymentMethod::cases(),
@@ -462,6 +491,8 @@ class SaleScreen extends Component
         $this->showPayment = false;
         $this->paymentAmount = '';
         $this->paymentReference = '';
+        $this->customerId = null;
+        $this->customerSearch = '';
     }
 
     private function syncPrescriptionFlag(): void

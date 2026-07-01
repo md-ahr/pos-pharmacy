@@ -342,9 +342,9 @@ tests/
 - [x] Sale return/refund flow with stock reversal
 
 ### Phase 7 — Customers
-- [ ] Customer CRUD
-- [ ] Attach customer to sale (optional — support anonymous walk-in checkout)
-- [ ] Customer purchase history view
+- [x] Customer CRUD
+- [x] Attach customer to sale (optional — support anonymous walk-in checkout)
+- [x] Customer purchase history view
 
 ### Phase 8 — Reporting & Dashboard
 - [ ] Dashboard: today's sales, top products, low stock, expiring soon, register/shift totals
