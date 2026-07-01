@@ -1,0 +1,17 @@
+When auto-generating a Git commit message for this repository, follow Conventional Commits:
+
+<type>[optional scope]: <imperative description>
+
+Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+Scopes (optional): pos, stock, tenant, auth, inventory, deploy, ui, db
+
+Rules:
+- Lowercase subject after the colon; no trailing period; max 72 characters
+- Imperative mood ("add X", not "added X")
+- Optional body separated by a blank line — explain why, not what
+- Breaking changes: type(scope)! or BREAKING CHANGE footer
+
+Examples:
+- feat(pos): add cart quantity stepper
+- fix(stock): reject expired batch at checkout
+- test(tenant): assert cross-tenant isolation on products
