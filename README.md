@@ -1,58 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Pharmacy POS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Multi-tenant Point-of-Sale SaaS for pharmacies. Each pharmacy signs up self-serve, runs one or more branches, and manages inventory, sales, and reporting with pharmacy-specific workflows: batch/expiry tracking (FEFO), unit conversions, and lightweight prescription metadata.
 
-## About Laravel
+**Status:** Early development — Laravel 13 + Tyro dashboard foundation is in place; domain schema, tenant scoping, and POS features are built per [`PHARMACY_POS_PLAN.md`](PHARMACY_POS_PLAN.md).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features (planned)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Multi-tenant SaaS** — single database, `tenant_id` on business tables, automatic Eloquent scoping
+- **Multi-branch** — per-tenant branches with branch assignment for staff
+- **Inventory** — products, batches, FEFO stock deduction, unit conversions (tablet/strip/box)
+- **POS** — keyboard-first checkout, cart, payments, hold/resume, browser-print receipts
+- **Purchasing** — suppliers, purchase orders, stock adjustments and transfers
+- **Reporting** — sales, margins, inventory valuation, expiry, tax (PDF/Excel export)
+- **Roles** — owner, manager, pharmacist, cashier (extends Tyro auth/RBAC)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Out of scope for v1
 
-## Learning Laravel
+No barcode scanner, thermal printer, ESC/POS, or cash-drawer hardware. Product lookup is search-driven; receipts use the browser print dialog.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Tech stack
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Layer | Choice |
+|---|---|
+| Backend | Laravel 13, PHP 8.4 |
+| Database | PostgreSQL |
+| UI | Livewire + Alpine.js, Tyro dashboard (Blade) |
+| Auth / RBAC | Tyro (extended with `tenant_id`, `branch_id`, pharmacy roles) |
+| API tokens | Laravel Sanctum |
+| Tests | Pest 4 |
+| CSS | Tailwind CSS 4 |
+| Hosting target | Hostinger VPS + Coolify |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Requirements
 
-## Agentic Development
+- PHP 8.4+
+- Composer 2
+- Node.js 20+ and npm
+- PostgreSQL 15+
+- [Laravel Herd](https://herd.laravel.com/) (recommended for local macOS/Windows development)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Local setup
+
+### With Laravel Herd
+
+Herd serves this app at `https://pos-pharmecy.test` when the project directory is linked.
 
 ```bash
-composer require laravel/boost --dev
+git clone <repo-url> pos-pharmecy
+cd pos-pharmecy
 
-php artisan boost:install
+composer install
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Configure PostgreSQL in `.env`:
 
-## Contributing
+```env
+APP_NAME="Pharmacy POS"
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=pos_pharmecy
+DB_USERNAME=your_user
+DB_PASSWORD=your_password
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Then migrate and build assets:
 
-## Code of Conduct
+```bash
+php artisan migrate
+npm install
+npm run build
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Or use the combined setup script:
 
-## Security Vulnerabilities
+```bash
+composer run setup
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Without Herd
+
+Use `composer run dev` (see below) or run `php artisan serve` alongside `npm run dev`.
+
+## Development
+
+Start the app, queue worker, log tail, and Vite dev server together:
+
+```bash
+composer run dev
+```
+
+Other useful commands:
+
+```bash
+php artisan test              # run Pest tests
+vendor/bin/pint               # format PHP
+npm run build                 # production frontend assets
+```
+
+## Project documentation
+
+| File | Purpose |
+|---|---|
+| [`PHARMACY_POS_PLAN.md`](PHARMACY_POS_PLAN.md) | Full spec: schema, phases, business rules |
+| [`AGENTS.md`](AGENTS.md) / [`CLAUDE.md`](CLAUDE.md) | Laravel Boost + agent conventions |
+| `.cursor/rules/` | Pharmacy guardrails (tenant isolation, stock, commits) |
+| `**/skills/pharmacy-*` | Domain skills for AI-assisted development |
+
+Work through plan phases in order — do not build POS UI before tenant scoping and core services exist.
+
+## Architecture highlights
+
+- **Tenancy:** `BelongsToTenant` trait + `TenantScope` global scope on business models
+- **Stock:** all deductions via `StockDeductionService` with `DB::transaction` + `lockForUpdate()`; FEFO (`expiry_date ASC`)
+- **Units:** `UnitConversionService` converts sell units to `quantity_base` before stock math
+- **Money:** `decimal(12,2)` columns; use `bcmath`, not floats
+- **Invoices:** `InvoiceNumberService` per tenant — no ad-hoc ID generation
+
+Queued jobs and Artisan commands must set tenant context explicitly; `TenantScope` relies on the authenticated user.
+
+## Testing
+
+```bash
+php artisan test
+php artisan test --filter=TenantIsolation
+```
+
+Every checkout or stock-affecting change should include a feature test.
+
+## Agentic development
+
+This project uses [Laravel Boost](https://laravel.com/docs/ai) and pharmacy-specific skills under `.agents/skills/`, `.claude/skills/`, and `.factory/skills/`. Activate the relevant `pharmacy-*` skill when working on tenancy, stock, POS UI, or deployment.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT
