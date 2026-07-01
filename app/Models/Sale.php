@@ -57,6 +57,11 @@ class Sale extends Model
         return $this->belongsTo(Branch::class);
     }
 
+    public function tenant(): BelongsTo
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
     public function cashier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

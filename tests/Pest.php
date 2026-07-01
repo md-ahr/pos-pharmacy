@@ -44,6 +44,23 @@ expect()->extend('toBeOne', function () {
 |
 */
 
+use App\Models\Branch;
+use App\Models\Tenant;
+use App\Models\User;
+use App\Services\BranchContext;
+
+function createPharmacyContext(?Tenant $tenant = null): array
+{
+    $tenant ??= Tenant::factory()->create();
+    $branch = Branch::factory()->main()->create(['tenant_id' => $tenant->id]);
+    $user = User::factory()->owner($tenant)->create();
+
+    test()->actingAs($user);
+    app(BranchContext::class)->initialize($user, $branch->id);
+
+    return compact('tenant', 'branch', 'user');
+}
+
 function something()
 {
     // ..

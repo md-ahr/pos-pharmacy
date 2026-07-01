@@ -18,6 +18,7 @@ class SaleItem extends Model
         'batch_id',
         'product_unit_id',
         'quantity',
+        'refunded_quantity',
         'quantity_base',
         'unit_price',
         'discount_amount',
@@ -33,6 +34,7 @@ class SaleItem extends Model
     {
         return [
             'quantity' => 'integer',
+            'refunded_quantity' => 'integer',
             'quantity_base' => 'integer',
             'unit_price' => 'decimal:2',
             'discount_amount' => 'decimal:2',

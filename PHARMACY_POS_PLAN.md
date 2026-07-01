@@ -307,38 +307,39 @@ tests/
 - [x] Write `TenantIsolationTest` — verify no query ever leaks cross-tenant data
 
 ### Phase 4 — Core Services (build before UI)
-- [ ] `UnitConversionService` — convert between product_unit and base_unit quantities
-- [ ] `StockDeductionService` — FEFO batch selection + `lockForUpdate()` deduction inside a
+- [x] `UnitConversionService` — convert between product_unit and base_unit quantities
+- [x] `StockDeductionService` — FEFO batch selection + `lockForUpdate()` deduction inside a
       transaction; throws a clear exception on insufficient stock
-- [ ] `InvoiceNumberService` — generates unique, sequential invoice numbers per tenant
-- [ ] Feature tests for each service, including concurrency/race-condition tests for stock deduction
+- [x] `InvoiceNumberService` — generates unique, sequential invoice numbers per tenant
+- [x] Feature tests for each service, including concurrency/race-condition tests for stock deduction
 
 ### Phase 5 — Inventory & Purchasing
-- [ ] Product CRUD (Livewire, styled with Tyro components) with category/manufacturer, unit conversions
-- [ ] Batch intake screen (manual stock-in and via Purchase Orders)
-- [ ] Supplier CRUD
-- [ ] Purchase Order workflow: draft → ordered → received (received triggers batch + stock creation)
-- [ ] Stock adjustment screen (damages, expiry write-off, physical count reconciliation)
-- [ ] Low-stock dashboard widget (based on `reorder_level`)
-- [ ] Near-expiry dashboard widget/report
-- [ ] Stock transfer between branches
+- [x] Product CRUD (Livewire, styled with Tyro components) with category/manufacturer, unit conversions
+- [x] Batch intake screen (manual stock-in and via Purchase Orders)
+- [x] Supplier CRUD
+- [x] Purchase Order workflow: draft → ordered → received (received triggers batch + stock creation)
+- [x] Stock adjustment screen (damages, expiry write-off, physical count reconciliation)
+- [x] Low-stock dashboard widget (based on `reorder_level`)
+- [x] Near-expiry dashboard widget/report
+- [x] Stock transfer between branches
 
 ### Phase 6 — POS Sales Screen (the core feature)
-- [ ] Product search/lookup Livewire component — primary input is **typed search** (name, SKU,
+- [x] Product search/lookup Livewire component — primary input is **typed search** (name, SKU,
       generic name); optional barcode field match when a barcode was entered on the product record
       (paste or type — no scanner hardware)
-- [ ] Fast keyboard UX: search box focused by default, arrow keys + Enter to add to cart, shortcuts
+- [x] Fast keyboard UX: search box focused by default, arrow keys + Enter to add to cart, shortcuts
       for common actions (quantity, checkout) — optimized for keyboard/mouse, not scanner wedge
-- [ ] Cart component: add/remove line items, quantity, unit selection (tablet/strip/box)
-- [ ] FEFO batch auto-selection with manual override option
-- [ ] Discount + tax calculation
-- [ ] Payment component: cash/card/mobile, split payments
-- [ ] Hold/resume sale (park a transaction)
-- [ ] Prescription flag UI: mark sale/line items as prescription-related, capture prescriber info
-- [ ] Checkout: wraps stock deduction + sale/sale_items/sale_payments creation in one DB transaction
-- [ ] Receipt: print-friendly Blade view + **browser print** (`window.print()` / `@media print` CSS
-      for A4 or letter — no ESC/POS or thermal-width layouts in v1); optional PDF download via dompdf
-- [ ] Sale return/refund flow with stock reversal
+- [x] Cart component: add/remove line items, quantity, unit selection (tablet/strip/box)
+- [x] FEFO batch auto-selection with manual override option
+- [x] Discount + tax calculation
+- [x] Payment component: cash/card/mobile, split payments
+- [x] Hold/resume sale (park a transaction)
+- [x] Prescription flag UI: mark sale/line items as prescription-related, capture prescriber info
+- [x] Checkout: wraps stock deduction + sale/sale_items/sale_payments creation in one DB transaction
+- [x] Receipt: print-friendly Blade view + **browser print** (`window.print()` / `@media print` CSS
+      for A4 or letter — no ESC/POS or thermal-width layouts in v1)
+- [ ] Optional PDF download via dompdf (deferred — package not installed)
+- [x] Sale return/refund flow with stock reversal
 
 ### Phase 7 — Customers
 - [ ] Customer CRUD

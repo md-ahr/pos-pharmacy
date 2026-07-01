@@ -18,4 +18,8 @@ return [
         'owner_role_slug' => 'owner',
     ],
 
+    'pos' => [
+        'tax_rate' => env('PHARMACY_TAX_RATE', '0.15'),
+    ],
+
 ];

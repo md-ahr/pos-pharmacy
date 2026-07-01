@@ -1,7 +1,18 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\SaleReceiptController;
 use App\Livewire\Dashboard\Welcome;
+use App\Livewire\Inventory\BatchIntake;
+use App\Livewire\Inventory\ProductForm;
+use App\Livewire\Inventory\ProductsIndex;
+use App\Livewire\Inventory\PurchaseOrderForm;
+use App\Livewire\Inventory\PurchaseOrdersIndex;
+use App\Livewire\Inventory\StockAdjustment;
+use App\Livewire\Inventory\StockTransfer;
+use App\Livewire\Inventory\SupplierForm;
+use App\Livewire\Inventory\SuppliersIndex;
+use App\Livewire\Pos\SaleScreen;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,13 +34,36 @@ Route::middleware(['web', 'guest'])->group(function (): void {
 });
 
 Route::middleware(['auth', 'pharmacy.context'])->group(function (): void {
-    Route::get('/pos', fn () => view('pharmacy.stub', ['title' => 'POS']))
+    Route::get('/pos', SaleScreen::class)
         ->middleware('privilege:pos.access')
         ->name('pharmacy.pos');
 
-    Route::get('/inventory', fn () => view('pharmacy.stub', ['title' => 'Inventory']))
-        ->middleware('privilege:inventory.manage')
-        ->name('pharmacy.inventory');
+    Route::get('/pos/receipt/{sale}', [SaleReceiptController::class, 'show'])
+        ->middleware('privilege:pos.access')
+        ->name('pharmacy.pos.receipt');
+
+    Route::middleware('privilege:inventory.manage')->prefix('inventory')->group(function (): void {
+        Route::get('/', function () {
+            return view('pharmacy.inventory-hub');
+        })->name('pharmacy.inventory');
+
+        Route::get('/products', ProductsIndex::class)->name('pharmacy.inventory.products');
+        Route::get('/products/create', ProductForm::class)->name('pharmacy.inventory.products.create');
+        Route::get('/products/{product}/edit', ProductForm::class)->name('pharmacy.inventory.products.edit');
+
+        Route::get('/batch-intake', BatchIntake::class)->name('pharmacy.inventory.batch-intake');
+
+        Route::get('/suppliers', SuppliersIndex::class)->name('pharmacy.inventory.suppliers');
+        Route::get('/suppliers/create', SupplierForm::class)->name('pharmacy.inventory.suppliers.create');
+        Route::get('/suppliers/{supplier}/edit', SupplierForm::class)->name('pharmacy.inventory.suppliers.edit');
+
+        Route::get('/purchase-orders', PurchaseOrdersIndex::class)->name('pharmacy.inventory.purchase-orders');
+        Route::get('/purchase-orders/create', PurchaseOrderForm::class)->name('pharmacy.inventory.purchase-orders.create');
+        Route::get('/purchase-orders/{purchaseOrder}/edit', PurchaseOrderForm::class)->name('pharmacy.inventory.purchase-orders.edit');
+
+        Route::get('/adjustments', StockAdjustment::class)->name('pharmacy.inventory.adjustments');
+        Route::get('/transfers', StockTransfer::class)->name('pharmacy.inventory.transfers');
+    });
 
     Route::get('/reports', fn () => view('pharmacy.stub', ['title' => 'Reports']))
         ->middleware('privilege:reports.view')
