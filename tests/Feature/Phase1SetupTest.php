@@ -1,8 +1,16 @@
 <?php
 
 use App\Livewire\Dashboard\Welcome;
+use Database\Seeders\PharmacyRoleSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function (): void {
+    $this->seed(PharmacyRoleSeeder::class);
+});
 
 test('tyro login routes are registered', function () {
     expect(Route::has('tyro-login.login'))->toBeTrue()
@@ -18,6 +26,8 @@ test('tyro dashboard route is registered and requires authentication', function 
 });
 
 test('livewire is installed and class-based components resolve', function () {
+    createPharmacyContext();
+
     expect(class_exists(Livewire::class))->toBeTrue()
         ->and(class_exists(Welcome::class))->toBeTrue();
 

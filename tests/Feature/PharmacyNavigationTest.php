@@ -34,7 +34,7 @@ test('cashier sees pos menu but not settings', function () {
         ->get(route('tyro-dashboard.index'))
         ->assertOk()
         ->assertSee('Point of Sale')
-        ->assertDontSee('Settings');
+        ->assertDontSee(route('pharmacy.settings.general'), false);
 });
 
 test('pharmacy menu routes are registered', function () {

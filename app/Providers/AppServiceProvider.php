@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Listeners\ClearPharmacyContextOnLogout;
 use App\Listeners\SetPharmacyContextOnLogin;
+use App\Livewire\Dashboard\Welcome;
 use App\Models\User;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -50,6 +51,17 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('commonMenuItems', $this->pharmacyMenuItemsFor($user));
             },
         );
+
+        $this->app->booted(function (): void {
+            $prefix = trim((string) config('tyro-dashboard.routes.prefix', 'dashboard'), '/');
+
+            Route::middleware(array_merge(
+                config('tyro-dashboard.routes.middleware', ['web', 'auth']),
+                ['pharmacy.context'],
+            ))
+                ->get('/'.$prefix, Welcome::class)
+                ->name('tyro-dashboard.index');
+        });
     }
 
     /**

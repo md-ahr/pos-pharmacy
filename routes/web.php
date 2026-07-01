@@ -6,7 +6,6 @@ use App\Http\Controllers\SaleReceiptController;
 use App\Livewire\Customers\CustomerForm;
 use App\Livewire\Customers\CustomerShow;
 use App\Livewire\Customers\CustomersIndex;
-use App\Livewire\Dashboard\Welcome;
 use App\Livewire\Inventory\BatchIntake;
 use App\Livewire\Inventory\ProductForm;
 use App\Livewire\Inventory\ProductsIndex;
@@ -33,10 +32,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        return redirect()->route('tyro-dashboard.index');
+        return redirect('/dashboard');
     }
 
-    return view('welcome');
+    return redirect('/login');
 });
 
 Route::middleware(['web', 'guest'])->group(function (): void {
@@ -116,6 +115,4 @@ Route::middleware(['auth', 'pharmacy.context'])->group(function (): void {
         Route::get('/register', RegisterShiftManager::class)->name('pharmacy.settings.register');
     });
 
-    Route::get('/dashboard/welcome', Welcome::class)
-        ->name('pharmacy.dashboard.welcome');
 });
