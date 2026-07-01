@@ -15,7 +15,7 @@
                 <div>
                     <label class="form-label">Name</label>
                     <input type="text" wire:model="name" class="form-input">
-                    @error('name') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('name') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Generic Name</label>
@@ -24,35 +24,43 @@
                 <div>
                     <label class="form-label">SKU</label>
                     <input type="text" wire:model="sku" class="form-input">
-                    @error('sku') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('sku') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Barcode</label>
                     <input type="text" wire:model="barcode" class="form-input">
-                    @error('barcode') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('barcode') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Base Unit</label>
                     <input type="text" wire:model="base_unit" class="form-input" placeholder="tablet, ml, capsule">
-                    @error('base_unit') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('base_unit') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
-                    <label class="form-label">Category</label>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.375rem;">
+                        <label class="form-label" style="margin: 0;">Category</label>
+                        <a href="{{ route('pharmacy.inventory.categories.create') }}" class="btn btn-ghost btn-sm">+ Add</a>
+                    </div>
                     <select wire:model="category_id" class="form-input">
                         <option value="">— None —</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
+                    <a href="{{ route('pharmacy.inventory.categories') }}" class="btn btn-ghost btn-sm" style="margin-top: 0.375rem;">Manage categories</a>
                 </div>
                 <div>
-                    <label class="form-label">Manufacturer</label>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.375rem;">
+                        <label class="form-label" style="margin: 0;">Manufacturer</label>
+                        <a href="{{ route('pharmacy.inventory.manufacturers.create') }}" class="btn btn-ghost btn-sm">+ Add</a>
+                    </div>
                     <select wire:model="manufacturer_id" class="form-input">
                         <option value="">— None —</option>
                         @foreach($manufacturers as $manufacturer)
                             <option value="{{ $manufacturer->id }}">{{ $manufacturer->name }}</option>
                         @endforeach
                     </select>
+                    <a href="{{ route('pharmacy.inventory.manufacturers') }}" class="btn btn-ghost btn-sm" style="margin-top: 0.375rem;">Manage manufacturers</a>
                 </div>
                 <div>
                     <label class="form-label">Reorder Level</label>
@@ -71,13 +79,13 @@
                 <button type="button" wire:click="addUnit" class="btn btn-secondary btn-sm">Add Unit</button>
             </div>
             <div class="card-body">
-                @error('units') <div class="text-danger" style="margin-bottom: 1rem;">{{ $message }}</div> @enderror
+                @error('units') <span class="form-error" style="margin-bottom: 1rem;">{{ $message }}</span> @enderror
                 @foreach($units as $index => $unit)
-                    <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color, #eee);">
+                    <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                         <div>
                             <label class="form-label">Unit Name</label>
                             <input type="text" wire:model="units.{{ $index }}.unit_name" class="form-input">
-                            @error("units.{$index}.unit_name") <div class="text-danger">{{ $message }}</div> @enderror
+                            @error("units.{$index}.unit_name") <span class="form-error">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label class="form-label">Conversion Factor</label>
@@ -94,7 +102,7 @@
                         <div style="display: flex; align-items: end; gap: 0.5rem;">
                             <label><input type="checkbox" wire:model="units.{{ $index }}.is_default"> Default</label>
                             @if(count($units) > 1)
-                                <button type="button" wire:click="removeUnit({{ $index }})" class="btn btn-ghost btn-sm text-danger">Remove</button>
+                                <button type="button" wire:click="removeUnit({{ $index }})" class="btn btn-ghost btn-sm text-destructive">Remove</button>
                             @endif
                         </div>
                     </div>

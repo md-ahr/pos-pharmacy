@@ -23,35 +23,35 @@
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
                         @endforeach
                     </select>
-                    @error('product_id') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('product_id') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Batch Number</label>
                     <input type="text" wire:model="batch_no" class="form-input">
-                    @error('batch_no') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('batch_no') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Expiry Date</label>
                     <input type="date" wire:model="expiry_date" class="form-input">
-                    @error('expiry_date') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('expiry_date') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Cost Price</label>
                     <input type="number" step="0.01" wire:model="cost_price" class="form-input">
-                    @error('cost_price') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('cost_price') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Selling Price</label>
                     <input type="number" step="0.01" wire:model="selling_price" class="form-input">
-                    @error('selling_price') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('selling_price') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Quantity (base units)</label>
                     <input type="number" wire:model="quantity" class="form-input" min="1">
-                    @error('quantity') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('quantity') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
             </div>
-            <div class="card-body" style="border-top: 1px solid var(--border-color, #eee);">
+            <div class="card-body" style="border-top: 1px solid var(--border);">
                 <button type="submit" class="btn btn-primary">Receive Stock</button>
             </div>
         </div>

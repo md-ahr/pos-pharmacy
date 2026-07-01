@@ -53,7 +53,9 @@ test('customer form requires at least one identifier', function () {
         ->set('phone', '')
         ->set('email', '')
         ->call('save')
-        ->assertHasErrors(['name']);
+        ->assertHasErrors(['name'])
+        ->assertSee('Provide at least a name, phone, or email.')
+        ->assertSeeHtml('class="form-error"');
 });
 
 test('customer show lists purchase history', function () {

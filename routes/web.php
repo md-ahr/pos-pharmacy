@@ -7,6 +7,10 @@ use App\Livewire\Customers\CustomerForm;
 use App\Livewire\Customers\CustomerShow;
 use App\Livewire\Customers\CustomersIndex;
 use App\Livewire\Inventory\BatchIntake;
+use App\Livewire\Inventory\CategoriesIndex;
+use App\Livewire\Inventory\CategoryForm;
+use App\Livewire\Inventory\ManufacturerForm;
+use App\Livewire\Inventory\ManufacturersIndex;
 use App\Livewire\Inventory\ProductForm;
 use App\Livewire\Inventory\ProductsIndex;
 use App\Livewire\Inventory\PurchaseOrderForm;
@@ -77,6 +81,14 @@ Route::middleware(['auth', 'pharmacy.context'])->group(function (): void {
         Route::get('/products', ProductsIndex::class)->name('pharmacy.inventory.products');
         Route::get('/products/create', ProductForm::class)->name('pharmacy.inventory.products.create');
         Route::get('/products/{product}/edit', ProductForm::class)->name('pharmacy.inventory.products.edit');
+
+        Route::get('/categories', CategoriesIndex::class)->name('pharmacy.inventory.categories');
+        Route::get('/categories/create', CategoryForm::class)->name('pharmacy.inventory.categories.create');
+        Route::get('/categories/{category}/edit', CategoryForm::class)->name('pharmacy.inventory.categories.edit');
+
+        Route::get('/manufacturers', ManufacturersIndex::class)->name('pharmacy.inventory.manufacturers');
+        Route::get('/manufacturers/create', ManufacturerForm::class)->name('pharmacy.inventory.manufacturers.create');
+        Route::get('/manufacturers/{manufacturer}/edit', ManufacturerForm::class)->name('pharmacy.inventory.manufacturers.edit');
 
         Route::get('/batch-intake', BatchIntake::class)->name('pharmacy.inventory.batch-intake');
 

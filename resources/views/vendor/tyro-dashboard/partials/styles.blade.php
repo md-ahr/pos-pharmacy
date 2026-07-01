@@ -417,11 +417,11 @@
         align-items: center;
         gap: 0.5rem;
         font-size: 0.9375rem;
-        color: var(--muted-foreground);
+        color: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
     }
 
     .breadcrumb a {
-        color: var(--muted-foreground);
+        color: color-mix(in srgb, var(--foreground) 72%, var(--muted-foreground));
         text-decoration: none;
         transition: color 0.15s ease;
     }
@@ -954,6 +954,11 @@
         background-color: color-mix(in srgb, var(--primary), black 10%);
     }
 
+    a.btn.btn-primary:link,
+    a.btn.btn-primary:visited {
+        color: var(--primary-foreground);
+    }
+
     .btn-default {
         background-color: var(--primary);
         color: var(--primary-foreground);
@@ -981,27 +986,51 @@
         opacity: 0.8;
     }
 
+    .btn-outline,
     .btn-outline-btn {
         background-color: var(--background);
         border: 1px solid var(--input);
         color: var(--foreground);
     }
 
+    .btn-outline:hover,
     .btn-outline-btn:hover {
         background-color: var(--accent);
         color: var(--accent-foreground);
     }
 
+    a.btn.btn-outline:link,
+    a.btn.btn-outline:visited,
+    a.btn.btn-outline-btn:link,
+    a.btn.btn-outline-btn:visited {
+        color: var(--foreground);
+    }
+
+    .btn-ghost,
     .btn-ghost-btn {
         background-color: transparent;
         color: var(--foreground);
     }
 
+    .btn-ghost:hover,
     .btn-ghost-btn:hover {
         background-color: var(--accent);
         color: var(--accent-foreground);
     }
 
+    a.btn.btn-ghost:link,
+    a.btn.btn-ghost:visited,
+    a.btn.btn-ghost-btn:link,
+    a.btn.btn-ghost-btn:visited {
+        color: var(--foreground);
+    }
+
+    a.btn.btn-ghost:hover,
+    a.btn.btn-ghost-btn:hover {
+        color: var(--accent-foreground);
+    }
+
+    .btn-link,
     .btn-link-btn {
         background-color: transparent;
         color: var(--primary);
@@ -1009,8 +1038,16 @@
         text-underline-offset: 4px;
     }
 
+    .btn-link:hover,
     .btn-link-btn:hover {
         text-decoration: underline;
+    }
+
+    a.btn.btn-link:link,
+    a.btn.btn-link:visited,
+    a.btn.btn-link-btn:link,
+    a.btn.btn-link-btn:visited {
+        color: var(--primary);
     }
 
     .btn:disabled {
@@ -1336,6 +1373,13 @@
         font-size: 0.8125rem;
         color: var(--destructive);
         margin-top: 0.5rem;
+        display: block;
+    }
+
+    .form-input:has(+ .form-error),
+    .form-select:has(+ .form-error),
+    .form-textarea:has(+ .form-error) {
+        border-color: var(--destructive);
     }
 
     .form-row {
@@ -1510,7 +1554,7 @@
         width: 20px;
         left: 2px;
         bottom: 2px;
-        background-color: white;
+        background-color: var(--background);
         transition: 0.2s;
         border-radius: 50%;
         box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.1);
@@ -1667,7 +1711,8 @@
         color: var(--success);
     }
 
-    .alert-error {
+    .alert-error,
+    .alert-danger {
         background-color: color-mix(in srgb, var(--destructive), transparent 90%);
         border-color: var(--destructive);
         color: var(--destructive);
@@ -1683,6 +1728,22 @@
         background-color: color-mix(in srgb, var(--info), transparent 90%);
         border-color: var(--info);
         color: var(--info);
+    }
+
+    .interactive-list-button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem 1rem;
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .interactive-list-button:hover {
+        background-color: var(--accent);
     }
 
     /* Pagination */
@@ -2636,8 +2697,13 @@
         color: var(--destructive-foreground);
     }
 
-    .text-muted-foreground {
+    .text-muted-foreground,
+    .text-muted {
         color: var(--muted-foreground);
+    }
+
+    .text-danger {
+        color: var(--destructive);
     }
 
     .text-accent-foreground {

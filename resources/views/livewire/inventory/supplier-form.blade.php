@@ -14,7 +14,7 @@
                 <div>
                     <label class="form-label">Name</label>
                     <input type="text" wire:model="name" class="form-input">
-                    @error('name') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('name') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Contact Name</label>
@@ -27,7 +27,7 @@
                 <div>
                     <label class="form-label">Email</label>
                     <input type="email" wire:model="email" class="form-input">
-                    @error('email') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('email') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div style="grid-column: 1 / -1;">
                     <label class="form-label">Address</label>
@@ -37,7 +37,7 @@
                     <label><input type="checkbox" wire:model="is_active"> Active</label>
                 </div>
             </div>
-            <div class="card-body" style="border-top: 1px solid var(--border-color, #eee);">
+            <div class="card-body" style="border-top: 1px solid var(--border);">
                 <button type="submit" class="btn btn-primary">Save Supplier</button>
             </div>
         </div>

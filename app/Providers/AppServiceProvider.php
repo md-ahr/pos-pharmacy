@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * @return list<array{title: string, route: string, icon?: string}>
+     * @return list<array{title: string, route: string, active: string, icon?: string}>
      */
     private function pharmacyMenuItemsFor(User $user): array
     {
@@ -86,10 +86,22 @@ class AppServiceProvider extends ServiceProvider
             $items[] = [
                 'title' => $item['title'],
                 'route' => $route,
+                'active' => $item['active'] ?? $this->menuActivePattern($route),
                 'icon' => $item['icon'] ?? null,
             ];
         }
 
         return $items;
+    }
+
+    private function menuActivePattern(string $route): string
+    {
+        $segments = explode('.', $route);
+
+        if (count($segments) > 2) {
+            return $segments[0].'.'.$segments[1].'*';
+        }
+
+        return $route.'*';
     }
 }

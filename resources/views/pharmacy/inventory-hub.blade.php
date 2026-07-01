@@ -22,6 +22,8 @@
     <div class="card">
         <div class="card-body" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
             <a href="{{ route('pharmacy.inventory.products') }}" class="btn btn-primary">Manage Products</a>
+            <a href="{{ route('pharmacy.inventory.categories') }}" class="btn btn-secondary">Categories</a>
+            <a href="{{ route('pharmacy.inventory.manufacturers') }}" class="btn btn-secondary">Manufacturers</a>
             <a href="{{ route('pharmacy.inventory.batch-intake') }}" class="btn btn-secondary">Batch Intake</a>
             <a href="{{ route('pharmacy.inventory.purchase-orders') }}" class="btn btn-secondary">Purchase Orders</a>
         </div>

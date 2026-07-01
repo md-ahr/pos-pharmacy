@@ -93,10 +93,43 @@
         }
 
         .impersonation-banner-btn:hover {
-            background: #fffbeb;
+            background: color-mix(in srgb, var(--card) 90%, #fef3c7);
             border-color: #b45309;
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .impersonation-banner {
+            background: linear-gradient(135deg, #422006 0%, #713f12 100%);
+            border-bottom-color: #d97706;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .dark .impersonation-banner-icon {
+            background: rgba(245, 158, 11, 0.25);
+        }
+
+        .dark .impersonation-banner-icon svg {
+            color: #fbbf24;
+        }
+
+        .dark .impersonation-banner-text {
+            color: #fde68a;
+        }
+
+        .dark .impersonation-banner-text strong {
+            color: #fef3c7;
+        }
+
+        .dark .impersonation-banner-btn {
+            background: var(--card);
+            color: #fde68a;
+            border-color: #d97706;
+        }
+
+        .dark .impersonation-banner-btn:hover {
+            background: color-mix(in srgb, var(--card) 85%, #92400e);
+            border-color: #f59e0b;
         }
 
         .impersonation-banner-btn svg {

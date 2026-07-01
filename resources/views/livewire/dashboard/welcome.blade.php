@@ -48,32 +48,7 @@
         />
     </div>
 
-    <div class="grid-2" style="margin-bottom: 1rem;">
-        <x-tyro-dashboard::card title="Today's Payment Totals">
-            <ul style="margin: 0; padding-left: 1.25rem;">
-                @foreach ($summary['payment_totals'] as $method => $total)
-                    <li>
-                        <strong>{{ ucfirst($method) }}</strong> — {{ $total }}
-                    </li>
-                @endforeach
-            </ul>
-        </x-tyro-dashboard::card>
-
-        <x-tyro-dashboard::card title="Top Products Today">
-            @if ($topProducts->isEmpty())
-                <p class="text-muted">No sales recorded today.</p>
-            @else
-                <ul style="margin: 0; padding-left: 1.25rem;">
-                    @foreach ($topProducts as $product)
-                        <li>
-                            <strong>{{ $product->product_name }}</strong>
-                            — {{ $product->quantity_sold }} sold ({{ $product->revenue }})
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </x-tyro-dashboard::card>
-    </div>
+    @include('livewire.dashboard.partials.charts')
 
     <div class="grid-2" style="margin-bottom: 1rem;">
         <livewire:dashboard.low-stock-widget />

@@ -98,10 +98,12 @@ test('pharmacy seeder creates sample tenant with products and stock', function (
     $tenant = Tenant::where('slug', 'demo-pharmacy')->first();
 
     expect($tenant)->not->toBeNull()
-        ->and($tenant->branches()->count())->toBe(1)
+        ->and($tenant->email)->toBe('ahr.web.pro@gmail.com')
+        ->and($tenant->branches()->count())->toBe(2)
         ->and($tenant->users()->where('role', 'owner')->count())->toBe(1)
-        ->and(Product::withoutGlobalScope(TenantScope::class)->where('tenant_id', $tenant->id)->count())->toBe(3)
-        ->and(Stock::withoutGlobalScope(TenantScope::class)->where('tenant_id', $tenant->id)->count())->toBe(3);
+        ->and(User::where('email', 'ahr.web.pro@gmail.com')->exists())->toBeTrue()
+        ->and(Product::withoutGlobalScope(TenantScope::class)->where('tenant_id', $tenant->id)->count())->toBe(12)
+        ->and(Stock::withoutGlobalScope(TenantScope::class)->where('tenant_id', $tenant->id)->count())->toBeGreaterThan(10);
 });
 
 test('stock quantity cannot go negative on postgresql', function () {

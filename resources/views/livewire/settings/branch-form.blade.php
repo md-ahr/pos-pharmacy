@@ -14,22 +14,22 @@
                 <div>
                     <label class="form-label">Name</label>
                     <input type="text" wire:model="name" class="form-input">
-                    @error('name') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('name') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Code</label>
                     <input type="text" wire:model="code" class="form-input">
-                    @error('code') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('code') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Phone</label>
                     <input type="text" wire:model="phone" class="form-input">
-                    @error('phone') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('phone') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div style="grid-column: 1 / -1;">
                     <label class="form-label">Address</label>
                     <textarea wire:model="address" class="form-input" rows="3"></textarea>
-                    @error('address') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('address') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label><input type="checkbox" wire:model="isMain"> Main branch</label>
@@ -38,7 +38,7 @@
                     <label><input type="checkbox" wire:model="isActive"> Active</label>
                 </div>
             </div>
-            <div class="card-body" style="border-top: 1px solid var(--border-color, #eee);">
+            <div class="card-body" style="border-top: 1px solid var(--border);">
                 <button type="submit" class="btn btn-primary">Save Branch</button>
             </div>
         </div>

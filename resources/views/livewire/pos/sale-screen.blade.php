@@ -82,7 +82,7 @@
                                         wire:key="search-{{ $product->id }}"
                                         wire:click="addProduct({{ $product->id }})"
                                         style="cursor:pointer;"
-                                        :style="highlight === {{ $index }} ? 'background: var(--primary-light, #eef2ff)' : ''"
+                                        :style="highlight === {{ $index }} ? 'background: var(--accent)' : ''"
                                     >
                                         <td>
                                             <strong>{{ $product->name }}</strong>
@@ -110,7 +110,7 @@
                 <div class="card-header"><h3 class="card-title">Held Sales</h3></div>
                 <div class="card-body" style="padding:0;">
                     @forelse($heldSales as $held)
-                        <div wire:key="held-{{ $held->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid var(--border-color,#eee);">
+                        <div wire:key="held-{{ $held->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid var(--border);">
                             <div>
                                 <strong>{{ $held->invoice_no }}</strong>
                                 <div class="text-muted" style="font-size:0.875rem;">{{ number_format((float) $held->total, 2) }}</div>
@@ -127,7 +127,7 @@
                 <div class="card-header"><h3 class="card-title">Recent Sales</h3></div>
                 <div class="card-body" style="padding:0;">
                     @forelse($recentSales as $recent)
-                        <div wire:key="recent-{{ $recent->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid var(--border-color,#eee);">
+                        <div wire:key="recent-{{ $recent->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid var(--border);">
                             <div>
                                 <strong>{{ $recent->invoice_no }}</strong>
                                 <div class="text-muted" style="font-size:0.875rem;">
@@ -182,13 +182,13 @@
                             <p class="text-muted" style="margin-top:0.5rem; font-size:0.875rem;">Leave empty for anonymous walk-in checkout.</p>
                         </div>
                         @if($customerSearch !== '' && $customerSearchResults->isNotEmpty())
-                            <div style="border:1px solid var(--border-color,#eee); border-radius:0.375rem; overflow:hidden;">
+                            <div style="border:1px solid var(--border); border-radius:0.375rem; overflow:hidden;">
                                 @foreach($customerSearchResults as $customer)
                                     <button
                                         type="button"
                                         wire:key="customer-search-{{ $customer->id }}"
                                         wire:click="selectCustomer({{ $customer->id }})"
-                                        style="display:block; width:100%; text-align:left; padding:0.75rem 1rem; border:0; border-bottom:1px solid var(--border-color,#eee); background:transparent; cursor:pointer;"
+                                        class="interactive-list-button"
                                     >
                                         <strong>{{ $customer->displayName() }}</strong>
                                         @if($customer->phone)
@@ -208,7 +208,7 @@
                 <div class="card-header"><h3 class="card-title">Cart</h3></div>
                 <div class="card-body" style="padding:0;">
                     @forelse($cart as $line)
-                        <div wire:key="cart-{{ $line['key'] }}" style="padding:1rem; border-bottom:1px solid var(--border-color,#eee);">
+                        <div wire:key="cart-{{ $line['key'] }}" style="padding:1rem; border-bottom:1px solid var(--border);">
                             <div style="display:flex; justify-content:space-between; gap:1rem;">
                                 <div>
                                     <strong>{{ $line['product_name'] }}</strong>
@@ -272,7 +272,7 @@
                     <div style="display:flex; justify-content:space-between; font-size:1.125rem;"><span>Total</span><strong>{{ $totals['total'] }}</strong></div>
 
                     @if($prescriptionRequired)
-                        <div style="display:grid; gap:0.75rem; border-top:1px solid var(--border-color,#eee); padding-top:0.75rem;">
+                        <div style="display:grid; gap:0.75rem; border-top:1px solid var(--border); padding-top:0.75rem;">
                             <div class="alert alert-warning" style="margin:0;">This sale includes prescription items.</div>
                             <div>
                                 <label class="form-label">Prescriber name</label>

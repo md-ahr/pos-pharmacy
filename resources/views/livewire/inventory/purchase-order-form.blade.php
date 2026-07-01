@@ -31,7 +31,7 @@
                                 <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                             @endforeach
                         </select>
-                        @error('supplier_id') <div class="text-danger">{{ $message }}</div> @enderror
+                        @error('supplier_id') <span class="form-error">{{ $message }}</span> @enderror
                     </div>
                     <div style="grid-column: 1 / -1;">
                         <label class="form-label">Notes</label>
@@ -56,7 +56,7 @@
                                         <option value="{{ $product->id }}">{{ $product->name }}</option>
                                     @endforeach
                                 </select>
-                                @error("lines.{$index}.product_id") <div class="text-danger">{{ $message }}</div> @enderror
+                                @error("lines.{$index}.product_id") <span class="form-error">{{ $message }}</span> @enderror
                             </div>
                             <div>
                                 <label class="form-label">Quantity</label>
@@ -68,7 +68,7 @@
                             </div>
                             <div style="display: flex; align-items: end;">
                                 @if(count($lines) > 1)
-                                    <button type="button" wire:click="removeLine({{ $index }})" class="btn btn-ghost btn-sm text-danger">Remove</button>
+                                    <button type="button" wire:click="removeLine({{ $index }})" class="btn btn-ghost btn-sm text-destructive">Remove</button>
                                 @endif
                             </div>
                         </div>
@@ -92,29 +92,29 @@
                 <div class="card-body">
                     @foreach($receiptLines as $index => $line)
                         @php $item = $purchaseOrder->items->firstWhere('id', $line['purchase_order_item_id']); @endphp
-                        <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color, #eee);">
+                        <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);">
                             <strong>{{ $item?->product?->name }}</strong> — Qty: {{ $item?->quantity }}
                             <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top: 0.75rem;">
                                 <div>
                                     <label class="form-label">Batch No</label>
                                     <input type="text" wire:model="receiptLines.{{ $index }}.batch_no" class="form-input">
-                                    @error("receiptLines.{$index}.batch_no") <div class="text-danger">{{ $message }}</div> @enderror
+                                    @error("receiptLines.{$index}.batch_no") <span class="form-error">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
                                     <label class="form-label">Expiry Date</label>
                                     <input type="date" wire:model="receiptLines.{{ $index }}.expiry_date" class="form-input">
-                                    @error("receiptLines.{$index}.expiry_date") <div class="text-danger">{{ $message }}</div> @enderror
+                                    @error("receiptLines.{$index}.expiry_date") <span class="form-error">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
                                     <label class="form-label">Selling Price</label>
                                     <input type="number" step="0.01" wire:model="receiptLines.{{ $index }}.selling_price" class="form-input">
-                                    @error("receiptLines.{$index}.selling_price") <div class="text-danger">{{ $message }}</div> @enderror
+                                    @error("receiptLines.{$index}.selling_price") <span class="form-error">{{ $message }}</span> @enderror
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
-                <div class="card-body" style="border-top: 1px solid var(--border-color, #eee);">
+                <div class="card-body" style="border-top: 1px solid var(--border);">
                     <button type="submit" class="btn btn-primary">Receive &amp; Update Stock</button>
                 </div>
             </div>

@@ -47,7 +47,7 @@
                     <div>
                         <label class="form-label">Opening Float (cash in drawer)</label>
                         <input type="number" step="0.01" min="0" wire:model="openingFloat" class="form-input">
-                        @error('openingFloat') <div class="text-danger">{{ $message }}</div> @enderror
+                        @error('openingFloat') <span class="form-error">{{ $message }}</span> @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">Open Register</button>
                 </div>
@@ -60,12 +60,12 @@
                     <div>
                         <label class="form-label">Counted Cash</label>
                         <input type="number" step="0.01" min="0" wire:model="countedCash" class="form-input">
-                        @error('countedCash') <div class="text-danger">{{ $message }}</div> @enderror
+                        @error('countedCash') <span class="form-error">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="form-label">Notes</label>
                         <textarea wire:model="closeNotes" class="form-input" rows="3"></textarea>
-                        @error('closeNotes') <div class="text-danger">{{ $message }}</div> @enderror
+                        @error('closeNotes') <span class="form-error">{{ $message }}</span> @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">Close & Reconcile</button>
                 </div>

@@ -25,7 +25,7 @@
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                         @endforeach
                     </select>
-                    @error('to_branch_id') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('to_branch_id') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Product</label>
@@ -35,7 +35,7 @@
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
                         @endforeach
                     </select>
-                    @error('product_id') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('product_id') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Batch</label>
@@ -45,19 +45,19 @@
                             <option value="{{ $batch->id }}">{{ $batch->batch_no }} (exp {{ $batch->expiry_date->format('Y-m-d') }})</option>
                         @endforeach
                     </select>
-                    @error('batch_id') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('batch_id') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="form-label">Quantity (base units)</label>
                     <input type="number" wire:model="quantity" class="form-input" min="1">
-                    @error('quantity') <div class="text-danger">{{ $message }}</div> @enderror
+                    @error('quantity') <span class="form-error">{{ $message }}</span> @enderror
                 </div>
                 <div style="grid-column: 1 / -1;">
                     <label class="form-label">Notes</label>
                     <textarea wire:model="notes" class="form-input" rows="2"></textarea>
                 </div>
             </div>
-            <div class="card-body" style="border-top: 1px solid var(--border-color, #eee);">
+            <div class="card-body" style="border-top: 1px solid var(--border);">
                 <button type="submit" class="btn btn-primary">Transfer Stock</button>
             </div>
         </div>

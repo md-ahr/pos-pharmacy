@@ -47,15 +47,9 @@
                 </svg>
                 Dashboard
             </a>
-            <a href="{{ route($dashboardRoute::name('profile')) }}" class="sidebar-link {{ request()->routeIs($dashboardRoute::pattern('profile*')) ? 'active' : '' }}">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                My Profile
-            </a>
             @if(!empty($commonMenuItems))
                 @foreach($commonMenuItems as $item)
-                    <a href="{{ route($item['route'] ?? '#') }}" class="sidebar-link {{ request()->routeIs($item['route'] ?? '') ? 'active' : '' }}">
+                    <a href="{{ route($item['route'] ?? '#') }}" class="sidebar-link {{ request()->routeIs($item['active'] ?? $item['route'] ?? '') ? 'active' : '' }}">
                         @if(isset($item['icon']))
                             {!! $item['icon'] !!}
                         @else
@@ -70,7 +64,7 @@
 
             @if(!empty($userMenuItems))
                 @foreach($userMenuItems as $item)
-                    <a href="{{ route($item['route'] ?? '#') }}" class="sidebar-link {{ request()->routeIs($item['route'] ?? '') ? 'active' : '' }}">
+                    <a href="{{ route($item['route'] ?? '#') }}" class="sidebar-link {{ request()->routeIs($item['active'] ?? $item['route'] ?? '') ? 'active' : '' }}">
                         @if(isset($item['icon']))
                             {!! $item['icon'] !!}
                         @else

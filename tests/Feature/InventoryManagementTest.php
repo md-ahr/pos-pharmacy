@@ -28,6 +28,8 @@ test('owner can access inventory screens', function () {
     $this->get(route('pharmacy.inventory'))->assertOk();
     $this->get(route('pharmacy.inventory.products'))->assertOk();
     $this->get(route('pharmacy.inventory.suppliers'))->assertOk();
+    $this->get(route('pharmacy.inventory.categories'))->assertOk();
+    $this->get(route('pharmacy.inventory.manufacturers'))->assertOk();
     $this->get(route('pharmacy.inventory.purchase-orders'))->assertOk();
 });
 

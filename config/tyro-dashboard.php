@@ -265,7 +265,7 @@ return [
     | and the example routes will be disabled.
     |
     */
-    'disable_examples' => env('TYRO_DASHBOARD_DISABLE_EXAMPLES', false),
+    'disable_examples' => env('TYRO_DASHBOARD_DISABLE_EXAMPLES', true),
 
     /*
     |--------------------------------------------------------------------------

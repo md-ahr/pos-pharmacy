@@ -195,6 +195,10 @@
     // Apply theme on load
     setTheme(getTheme());
 
+    document.addEventListener('livewire:navigated', function () {
+        setTheme(getTheme());
+    });
+
     // Listen for system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
         if (!localStorage.getItem('tyro-dashboard-theme')) {
