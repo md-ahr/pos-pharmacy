@@ -265,36 +265,34 @@ tests/
 ## 6. Development Phases & Tasks
 
 ### Phase 0 — Discovery & Requirements
-- [ ] Confirm scope with the pharmacy owner: which modules are needed for v1 (POS, inventory,
-      purchasing, reporting) vs later
-- [ ] Confirm **software-only POS constraints**: no barcode scanner, receipt printer, or cash drawer
+- [x] Confirm scope with the pharmacy owner: which modules are needed for v1 (POS, inventory,
+      purchasing, reporting) vs later — see [`docs/PHASE_0_DISCOVERY.md`](docs/PHASE_0_DISCOVERY.md)
+- [x] Confirm **software-only POS constraints**: no barcode scanner, receipt printer, or cash drawer
       in v1 — staff will search products by name/SKU/generic name and print receipts via the browser
-- [ ] Confirm local legal/compliance requirements: controlled substance tracking, required
-      receipt fields, batch/expiry disclosure rules
-- [ ] Defer hardware integration (USB/Bluetooth scanners, ESC/POS thermal printers) to a later
+- [x] Confirm local legal/compliance requirements: controlled substance tracking, required
+      receipt fields, batch/expiry disclosure rules — baseline documented in Phase 0 discovery
+- [x] Defer hardware integration (USB/Bluetooth scanners, ESC/POS thermal printers) to a later
       phase if needed; keep optional `barcode` columns in the schema for manual entry only
 
 ### Phase 1 — Environment & Project Setup
-- [ ] Install Laravel 13, configure PostgreSQL connection in `.env`
-- [ ] Install the Tyro dashboard template and wire up its Blade layout
-- [ ] **Investigate Tyro's bundled auth/role system**: inspect its vendor files, config, and docs
-      to confirm exactly what ships out of the box (auth controllers/views, roles table structure,
-      whether it uses Spatie permissions) — this determines exactly how Phase 3 extends it
-- [ ] Install Livewire + Alpine.js alongside Tyro's Blade components
-- [ ] Configure Pint for formatting, Larastan for static analysis
-- [ ] Set up Git repo, `.gitignore`, README
+- [x] Install Laravel 13, configure PostgreSQL connection in `.env`
+- [x] Install the Tyro dashboard template and wire up its Blade layout
+- [x] **Investigate Tyro's bundled auth/role system** — see [`docs/TYRO_AUTH_INVESTIGATION.md`](docs/TYRO_AUTH_INVESTIGATION.md)
+- [x] Install Livewire + Alpine.js alongside Tyro's Blade components
+- [x] Configure Pint for formatting, Larastan for static analysis
+- [x] Set up Git repo, `.gitignore`, README
 
 ### Phase 2 — Database Foundation
-- [ ] Write migrations: `tenants`, `branches`, extend `users` with `tenant_id`/`branch_id`/`role`
-- [ ] Write migrations: `categories`, `manufacturers`, `products`, `product_units`, `batches`, `stock`
-- [ ] Write migrations: `customers`, `sales`, `sale_items`, `sale_payments`
-- [ ] Build `TenantScope` (`app/Models/Scopes/`) + `BelongsToTenant` trait
+- [x] Write migrations: `tenants`, `branches`, extend `users` with `tenant_id`/`branch_id`/`role`
+- [x] Write migrations: `categories`, `manufacturers`, `products`, `product_units`, `batches`, `stock`
+- [x] Write migrations: `customers`, `sales`, `sale_items`, `sale_payments`
+- [x] Build `TenantScope` (`app/Models/Scopes/`) + `BelongsToTenant` trait
       (`app/Models/Concerns/`) for automatic tenant filtering
-- [ ] Build models for every table above, using `HasFactory, BelongsToTenant` on tenant-scoped ones
-- [ ] Write migrations: `suppliers`, `purchase_orders`, `purchase_order_items`
-- [ ] Write migrations: `stock_adjustments`, `stock_transfers`
-- [ ] Write migration: `audit_logs`
-- [ ] Factories + seeders for dev data (sample tenant, products, batches, stock)
+- [x] Build models for every table above, using `HasFactory, BelongsToTenant` on tenant-scoped ones
+- [x] Write migrations: `suppliers`, `purchase_orders`, `purchase_order_items`
+- [x] Write migrations: `stock_adjustments`, `stock_transfers`
+- [x] Write migration: `audit_logs`
+- [x] Factories + seeders for dev data (sample tenant, products, batches, stock)
 
 ### Phase 3 — Auth, Roles & Registration (built on Tyro)
 - [ ] Extend Tyro's existing login/register controllers and views rather than replacing them —

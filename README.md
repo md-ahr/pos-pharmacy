@@ -2,7 +2,7 @@
 
 Multi-tenant Point-of-Sale SaaS for pharmacies. Each pharmacy signs up self-serve, runs one or more branches, and manages inventory, sales, and reporting with pharmacy-specific workflows: batch/expiry tracking (FEFO), unit conversions, and lightweight prescription metadata.
 
-**Status:** Early development — Laravel 13 + Tyro dashboard foundation is in place; domain schema, tenant scoping, and POS features are built per [`PHARMACY_POS_PLAN.md`](PHARMACY_POS_PLAN.md).
+**Status:** Phase 0–1 complete — Laravel 13, PostgreSQL, Tyro dashboard/auth, Livewire, Pint, and Larastan are configured. Domain schema and tenant scoping start in Phase 2 per [`PHARMACY_POS_PLAN.md`](PHARMACY_POS_PLAN.md).
 
 ## Features (planned)
 
@@ -96,7 +96,8 @@ Other useful commands:
 
 ```bash
 php artisan test              # run Pest tests
-vendor/bin/pint               # format PHP
+composer run format           # format PHP (Pint)
+composer run analyse          # static analysis (Larastan)
 npm run build                 # production frontend assets
 ```
 
@@ -105,6 +106,8 @@ npm run build                 # production frontend assets
 | File | Purpose |
 |---|---|
 | [`PHARMACY_POS_PLAN.md`](PHARMACY_POS_PLAN.md) | Full spec: schema, phases, business rules |
+| [`docs/PHASE_0_DISCOVERY.md`](docs/PHASE_0_DISCOVERY.md) | Confirmed v1 scope and deferred items |
+| [`docs/TYRO_AUTH_INVESTIGATION.md`](docs/TYRO_AUTH_INVESTIGATION.md) | Tyro auth/RBAC findings for Phase 3 |
 | [`AGENTS.md`](AGENTS.md) / [`CLAUDE.md`](CLAUDE.md) | Laravel Boost + agent conventions |
 | `.cursor/rules/` | Pharmacy guardrails (tenant isolation, stock, commits) |
 | `**/skills/pharmacy-*` | Domain skills for AI-assisted development |
