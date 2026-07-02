@@ -62,6 +62,24 @@ class DashboardMetricsService
     }
 
     /**
+     * @return array{sales_count: int, revenue_total: string}
+     */
+    public function totalsSummary(?int $branchId): array
+    {
+        $totals = Sale::query()
+            ->whereIn('status', [SaleStatus::Completed, SaleStatus::PartiallyRefunded])
+            ->when($branchId !== null, fn ($query) => $query->where('branch_id', $branchId))
+            ->selectRaw('COUNT(*) as sales_count')
+            ->selectRaw('COALESCE(SUM(total), 0) as revenue_total')
+            ->first();
+
+        return [
+            'sales_count' => (int) ($totals->sales_count ?? 0),
+            'revenue_total' => number_format((float) ($totals->revenue_total ?? 0), 2, '.', ''),
+        ];
+    }
+
+    /**
      * @return Collection<int, object{product_id: int, product_name: string, quantity_sold: int, revenue: string}>
      */
     public function topProducts(?int $branchId, int $limit = 5): Collection
@@ -202,10 +220,10 @@ class DashboardMetricsService
             ->pluck('total', 'method');
 
         $colors = [
-            PaymentMethod::Cash->value => 'var(--success)',
-            PaymentMethod::Card->value => 'var(--primary)',
-            PaymentMethod::Mobile->value => 'var(--info)',
-            PaymentMethod::Other->value => 'var(--muted-foreground)',
+            PaymentMethod::Cash->value => 'var(--chart-1)',
+            PaymentMethod::Card->value => 'var(--chart-2)',
+            PaymentMethod::Mobile->value => 'var(--chart-3)',
+            PaymentMethod::Other->value => 'var(--chart-4)',
         ];
 
         $amounts = [];

@@ -45,12 +45,12 @@
         --input: {{ $cssVal('--input', 'oklch(0.922 0 0)', $lightOverrides) }};
         --ring: {{ $cssVal('--ring', 'oklch(0.708 0 0)', $lightOverrides) }};
 
-        /* Chart colors */
-        --chart-1: oklch(0.646 0.222 41.116);
-        --chart-2: oklch(0.6 0.118 184.704);
-        --chart-3: oklch(0.398 0.07 227.392);
-        --chart-4: oklch(0.828 0.189 84.429);
-        --chart-5: oklch(0.769 0.188 70.08);
+        /* Chart colors — consistent blue palette in light and dark mode */
+        --chart-1: oklch(0.55 0.22 264);
+        --chart-2: oklch(0.62 0.19 258);
+        --chart-3: oklch(0.48 0.22 268);
+        --chart-4: oklch(0.68 0.15 252);
+        --chart-5: oklch(0.42 0.2 272);
 
         /* Sidebar colors */
         --sidebar: oklch(0.985 0 0);
@@ -98,12 +98,12 @@
         --input: {{ $cssVal('--input', 'oklch(1 0 0 / 15%)', $darkOverrides) }};
         --ring: {{ $cssVal('--ring', 'oklch(0.556 0 0)', $darkOverrides) }};
 
-        /* Chart colors (dark mode) */
-        --chart-1: oklch(0.488 0.243 264.376);
-        --chart-2: oklch(0.696 0.17 162.48);
-        --chart-3: oklch(0.769 0.188 70.08);
-        --chart-4: oklch(0.627 0.265 303.9);
-        --chart-5: oklch(0.645 0.246 16.439);
+        /* Chart colors — same blue palette as light mode */
+        --chart-1: oklch(0.55 0.22 264);
+        --chart-2: oklch(0.62 0.19 258);
+        --chart-3: oklch(0.48 0.22 268);
+        --chart-4: oklch(0.68 0.15 252);
+        --chart-5: oklch(0.42 0.2 272);
 
         /* Sidebar colors (dark mode) */
         --sidebar: oklch(0.205 0 0);

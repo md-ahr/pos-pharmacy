@@ -25,21 +25,25 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'stat-card']) }}>
-    <div class="stat-icon stat-icon-{{ $variant }}">{!! $iconSvg !!}</div>
-    @if(filled($label))
-        <div class="stat-label">{{ $label }}</div>
-    @endif
-    @if(filled($value))
-        <div class="stat-value">{{ $value }}</div>
-    @endif
-    @if($hasChange)
-        <div class="stat-change {{ $changeClass }}">
-            @if($trend === 'up')
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17l9-9m0 0H7m9 0v9"/></svg>
-            @elseif($trend === 'down')
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7l9 9m0 0V7m9 9H7"/></svg>
+    <div class="stat-card-body">
+        <div class="stat-icon stat-icon-{{ $variant }}">{!! $iconSvg !!}</div>
+        <div class="stat-meta">
+            @if(filled($label))
+                <div class="stat-label">{{ $label }}</div>
             @endif
-            <span>{{ $change }}</span>
+            @if($hasChange)
+                <div class="stat-change {{ $changeClass }}">
+                    @if($trend === 'up')
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17l9-9m0 0H7m9 0v9"/></svg>
+                    @elseif($trend === 'down')
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7l9 9m0 0V7m9 9H7"/></svg>
+                    @endif
+                    <span>{{ $change }}</span>
+                </div>
+            @endif
         </div>
-    @endif
+        @if(filled($value))
+            <div class="stat-value">{{ $value }}</div>
+        @endif
+    </div>
 </div>

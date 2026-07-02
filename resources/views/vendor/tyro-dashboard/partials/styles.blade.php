@@ -745,80 +745,137 @@
         margin-bottom: 1.5rem;
     }
 
+    .stats-grid-dashboard {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 0.875rem;
+    }
+
+    @media (max-width: 1280px) {
+        .stats-grid-dashboard {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid-dashboard {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 520px) {
+        .stats-grid-dashboard {
+            grid-template-columns: minmax(0, 1fr);
+        }
+    }
+
     .stat-card {
-        background: var(--background);
+        background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1.5rem;
-        transition: all 0.15s ease;
+        border-radius: 12px;
+        padding: 1rem 1.125rem;
+        box-shadow: var(--card-shadow);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        min-width: 0;
     }
 
     .stat-card:hover {
+        border-color: color-mix(in srgb, var(--border), var(--foreground) 12%);
         box-shadow: var(--card-shadow-hover);
     }
 
+    .stat-card-body {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: start;
+        gap: 0.75rem 0.875rem;
+    }
+
+    .stat-meta {
+        min-width: 0;
+        padding-top: 0.125rem;
+    }
+
     .stat-icon {
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
         border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
+        box-shadow: inset 0 1px 0 color-mix(in srgb, white 35%, transparent);
     }
 
     .stat-icon svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
     }
 
     .stat-icon-primary {
-        background-color: var(--muted);
-        color: var(--foreground);
+        background-color: color-mix(in srgb, var(--primary), transparent 92%);
+        color: var(--primary);
     }
 
     .stat-icon-success {
-        background-color: color-mix(in srgb, var(--success), transparent 90%);
+        background-color: color-mix(in srgb, var(--success), transparent 88%);
         color: var(--success);
     }
 
     .stat-icon-warning {
-        background-color: color-mix(in srgb, var(--warning), transparent 90%);
+        background-color: color-mix(in srgb, var(--warning), transparent 88%);
         color: var(--warning);
     }
 
     .stat-icon-danger {
-        background-color: color-mix(in srgb, var(--destructive), transparent 90%);
+        background-color: color-mix(in srgb, var(--destructive), transparent 88%);
         color: var(--destructive);
     }
 
     .stat-icon-info {
-        background-color: color-mix(in srgb, var(--info), transparent 90%);
+        background-color: color-mix(in srgb, var(--info), transparent 88%);
         color: var(--info);
     }
 
     .stat-label {
-        font-size: 0.875rem;
-        font-weight: 500;
-        color: var(--muted-foreground);
-        margin-bottom: 0.375rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--foreground);
+        margin-bottom: 0;
+        line-height: 1.25;
+        letter-spacing: -0.01em;
     }
 
     .stat-value {
-        font-size: 2rem;
+        font-size: clamp(1.125rem, 1.35vw, 1.5rem);
         font-weight: 700;
         color: var(--foreground);
-        line-height: 1;
-        letter-spacing: -0.025em;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        text-align: right;
+        flex-shrink: 0;
+        font-variant-numeric: tabular-nums;
+        padding-top: 0.125rem;
+        white-space: nowrap;
     }
 
     .stat-change {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        line-height: 1.35;
+        margin-top: 0.3125rem;
+        color: var(--muted-foreground);
+    }
+
+    .stat-change.stat-change-up,
+    .stat-change.stat-change-down {
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
-        font-size: 0.6875rem;
-        font-weight: 500;
-        margin-top: 0.5rem;
     }
 
     .stat-change-up {

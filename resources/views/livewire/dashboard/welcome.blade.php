@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div class="stats-grid" style="margin-bottom: 1rem;">
+    <div class="stats-grid stats-grid-dashboard" style="margin-bottom: 1rem;">
         <x-tyro-dashboard::stat
             label="Today's Sales"
             :value="(string) $summary['sales_count']"
@@ -30,9 +30,16 @@
             variant="success"
         />
         <x-tyro-dashboard::stat
-            label="Today's Tax"
-            :value="$summary['tax_total']"
-            variant="info"
+            label="Total Revenue"
+            :value="$totals['revenue_total']"
+            variant="primary"
+            change="All time"
+        />
+        <x-tyro-dashboard::stat
+            label="Total Sales"
+            :value="(string) $totals['sales_count']"
+            variant="success"
+            change="All time"
         />
         <x-tyro-dashboard::stat
             label="Low Stock Items"

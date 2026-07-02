@@ -32,6 +32,7 @@ class Welcome extends Component
         return view('livewire.dashboard.welcome', [
             'user' => $user,
             'summary' => $metrics->todaySummary($branchId),
+            'totals' => $metrics->totalsSummary($branchId),
             'charts' => $metrics->charts($branchId),
             'branchName' => $branch?->name,
             'shiftSummary' => $shiftSummary,

@@ -34,6 +34,8 @@ test('dashboard shows pharmacy metrics for owner', function () {
         ->assertSee("Welcome back, {$user->name}")
         ->assertSee($branch->name)
         ->assertSee('Top Products Today')
+        ->assertSee('Total Revenue')
+        ->assertSee('Total Sales')
         ->assertSee($product->name)
         ->assertSee('Open POS');
 });

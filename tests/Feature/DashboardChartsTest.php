@@ -38,6 +38,25 @@ test('dashboard shows revenue and sales charts', function () {
         ->assertSee($product->name);
 });
 
+test('dashboard metrics service builds totals summary from sales', function () {
+    ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
+    $product = seedCheckoutProduct($tenant, $branch);
+
+    app(CheckoutService::class)->complete(
+        branch: $branch,
+        cashier: $user,
+        lines: [new CartLine(productId: $product->id, productUnitId: null, quantity: 1)],
+        payments: [new PaymentLine(PaymentMethod::Cash, '75.00')],
+    );
+
+    $totals = app(DashboardMetricsService::class)->totalsSummary($branch->id);
+
+    expect($totals)
+        ->toHaveKeys(['sales_count', 'revenue_total'])
+        ->and($totals['sales_count'])->toBe(1)
+        ->and((float) $totals['revenue_total'])->toBeGreaterThan(0);
+});
+
 test('dashboard metrics service builds chart data from sales', function () {
     ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
     $product = seedCheckoutProduct($tenant, $branch);
@@ -92,6 +111,8 @@ test('welcome livewire component renders chart sections', function () {
     createPharmacyContext();
 
     Livewire::test(Welcome::class)
+        ->assertSee('Total Revenue')
+        ->assertSee('Total Sales')
         ->assertSee('Revenue (Last 14 Days)')
         ->assertSee('Payment Mix (Last 7 Days)');
 });

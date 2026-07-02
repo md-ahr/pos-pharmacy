@@ -51,6 +51,7 @@ class SaleReceiptController extends Controller
             'payments',
             'branch',
             'cashier',
+            'customer',
             'tenant',
         ]);
 

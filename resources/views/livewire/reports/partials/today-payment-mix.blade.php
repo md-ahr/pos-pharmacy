@@ -1,9 +1,9 @@
 @php
     $colors = [
-        'cash' => 'var(--success)',
-        'card' => 'var(--primary)',
-        'mobile' => 'var(--info)',
-        'other' => 'var(--muted-foreground)',
+        'cash' => 'var(--chart-1)',
+        'card' => 'var(--chart-2)',
+        'mobile' => 'var(--chart-3)',
+        'other' => 'var(--chart-4)',
     ];
 
     $rows = collect($paymentTotals)
