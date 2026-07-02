@@ -116,6 +116,6 @@ test('inventory nav includes categories and manufacturers tabs', function () {
     $this->actingAs($user)
         ->get(route('pharmacy.inventory.categories'))
         ->assertOk()
-        ->assertSee('href="'.route('pharmacy.inventory.categories').'" class="btn btn-primary"', false)
-        ->assertSee('href="'.route('pharmacy.inventory.manufacturers').'" class="btn btn-ghost"', false);
+        ->assertSee('href="'.route('pharmacy.inventory.categories').'" class="btn btn-sm btn-primary"', false)
+        ->assertSee('href="'.route('pharmacy.inventory.manufacturers').'" class="btn btn-sm btn-ghost"', false);
 });

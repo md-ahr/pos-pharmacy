@@ -9,6 +9,7 @@ use App\Livewire\Customers\CustomersIndex;
 use App\Livewire\Inventory\BatchIntake;
 use App\Livewire\Inventory\CategoriesIndex;
 use App\Livewire\Inventory\CategoryForm;
+use App\Livewire\Inventory\InventoryHub;
 use App\Livewire\Inventory\ManufacturerForm;
 use App\Livewire\Inventory\ManufacturersIndex;
 use App\Livewire\Inventory\ProductForm;
@@ -74,9 +75,7 @@ Route::middleware(['auth', 'pharmacy.context'])->group(function (): void {
     });
 
     Route::middleware('privilege:inventory.manage')->prefix('inventory')->group(function (): void {
-        Route::get('/', function () {
-            return view('pharmacy.inventory-hub');
-        })->name('pharmacy.inventory');
+        Route::get('/', InventoryHub::class)->name('pharmacy.inventory');
 
         Route::get('/products', ProductsIndex::class)->name('pharmacy.inventory.products');
         Route::get('/products/create', ProductForm::class)->name('pharmacy.inventory.products.create');

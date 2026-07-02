@@ -224,7 +224,7 @@
                                 </div>
                                 <div>
                                     <label class="form-label">Unit</label>
-                                    <select class="form-input" wire:change="updateUnit('{{ $line['key'] }}', $event.target.value || null)">
+                                    <select class="form-select" wire:change="updateUnit('{{ $line['key'] }}', $event.target.value || null)">
                                         <option value="">{{ $line['unit_name'] ?? 'Base unit' }}</option>
                                         @foreach($line['units'] as $unit)
                                             <option value="{{ $unit['id'] }}" @selected($line['product_unit_id'] === $unit['id'])>{{ $unit['unit_name'] }}</option>
@@ -233,7 +233,7 @@
                                 </div>
                                 <div>
                                     <label class="form-label">Batch</label>
-                                    <select class="form-input" wire:change="updateBatch('{{ $line['key'] }}', $event.target.value)">
+                                    <select class="form-select" wire:change="updateBatch('{{ $line['key'] }}', $event.target.value)">
                                         @foreach($line['available_batches'] as $batch)
                                             <option value="{{ $batch['id'] }}" @selected($line['batch_id'] === $batch['id'])>
                                                 {{ $batch['batch_no'] }} ({{ $batch['expiry_date'] }})
@@ -304,7 +304,7 @@
                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.5rem;">
                         <div>
                             <label class="form-label">Method</label>
-                            <select wire:model="paymentMethod" class="form-input">
+                            <select wire:model="paymentMethod" class="form-select">
                                 @foreach($paymentMethods as $method)
                                     <option value="{{ $method->value }}">{{ ucfirst($method->value) }}</option>
                                 @endforeach

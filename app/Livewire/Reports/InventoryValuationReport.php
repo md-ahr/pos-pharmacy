@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports;
 
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Branch;
 use App\Services\BranchContext;
 use App\Services\Reports\InventoryValuationReportService;
@@ -11,9 +12,21 @@ use Livewire\Component;
 
 class InventoryValuationReport extends Component
 {
+    use ListensForBranchSwitch;
+
     public string $branchId = '';
 
     public function mount(): void
+    {
+        $this->syncValuationBranchFilter();
+    }
+
+    protected function refreshAfterBranchSwitch(): void
+    {
+        $this->syncValuationBranchFilter();
+    }
+
+    protected function syncValuationBranchFilter(): void
     {
         $activeBranchId = app(BranchContext::class)->activeBranchId();
         $this->branchId = $activeBranchId !== null ? (string) $activeBranchId : '';

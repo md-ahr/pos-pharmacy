@@ -3,6 +3,7 @@
 namespace App\Livewire\Inventory;
 
 use App\Enums\StockAdjustmentReason;
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Batch;
 use App\Models\Product;
 use App\Services\BranchContext;
@@ -12,6 +13,8 @@ use Livewire\Component;
 
 class StockAdjustment extends Component
 {
+    use ListensForBranchSwitch;
+
     public ?int $product_id = null;
 
     public ?int $batch_id = null;
@@ -21,6 +24,11 @@ class StockAdjustment extends Component
     public string $reason = 'physical_count';
 
     public string $notes = '';
+
+    protected function refreshAfterBranchSwitch(): void
+    {
+        $this->reset(['product_id', 'batch_id', 'quantity_delta', 'notes']);
+    }
 
     public function updatedProductId(): void
     {

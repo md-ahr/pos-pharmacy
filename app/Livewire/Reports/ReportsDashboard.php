@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Reports;
 
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Services\BranchContext;
 use App\Services\RegisterShiftService;
 use App\Services\Reports\DashboardMetricsService;
@@ -10,6 +11,8 @@ use Livewire\Component;
 
 class ReportsDashboard extends Component
 {
+    use ListensForBranchSwitch;
+
     public function render(
         BranchContext $branchContext,
         DashboardMetricsService $metrics,
@@ -24,6 +27,7 @@ class ReportsDashboard extends Component
         return view('livewire.reports.reports-dashboard', [
             'summary' => $metrics->todaySummary($branchId),
             'topProducts' => $metrics->topProducts($branchId),
+            'charts' => $metrics->charts($branchId),
             'branchName' => $branch?->name,
             'shiftSummary' => $shiftSummary,
         ])->layout('layouts.pharmacy', [

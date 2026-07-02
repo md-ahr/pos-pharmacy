@@ -17,7 +17,7 @@
             <div class="card-body" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
                 <div>
                     <label class="form-label">Product</label>
-                    <select wire:model="product_id" class="form-input">
+                    <select wire:model="product_id" class="form-select">
                         <option value="">Select product...</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->name }}</option>

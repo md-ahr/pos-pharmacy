@@ -6,6 +6,7 @@ use App\Data\CartLine;
 use App\Data\PaymentLine;
 use App\Enums\PaymentMethod;
 use App\Enums\SaleStatus;
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ProductUnit;
@@ -22,6 +23,8 @@ use Livewire\Component;
 
 class SaleScreen extends Component
 {
+    use ListensForBranchSwitch;
+
     public string $search = '';
 
     /** @var list<array<string, mixed>> */
@@ -55,6 +58,14 @@ class SaleScreen extends Component
     public ?int $customerId = null;
 
     public string $customerSearch = '';
+
+    protected function refreshAfterBranchSwitch(): void
+    {
+        $this->resetCart();
+        $this->search = '';
+        $this->completedSaleId = null;
+        $this->refundSaleId = null;
+    }
 
     public function selectCustomer(int $customerId): void
     {

@@ -93,6 +93,6 @@ test('inventory sub nav highlights active tab', function () {
     $this->actingAs($user)
         ->get(route('pharmacy.inventory.products'))
         ->assertOk()
-        ->assertSee('href="'.route('pharmacy.inventory.products').'" class="btn btn-primary"', false)
-        ->assertSee('href="'.route('pharmacy.inventory').'" class="btn btn-ghost"', false);
+        ->assertSee('href="'.route('pharmacy.inventory.products').'" class="btn btn-sm btn-primary"', false)
+        ->assertSee('href="'.route('pharmacy.inventory').'" class="btn btn-sm btn-ghost"', false);
 });

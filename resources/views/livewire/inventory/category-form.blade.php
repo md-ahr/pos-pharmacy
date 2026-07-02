@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <label class="form-label">Parent Category</label>
-                    <select wire:model="parent_id" class="form-input">
+                    <select wire:model="parent_id" class="form-select">
                         <option value="">— None (top level) —</option>
                         @foreach($parentOptions as $parent)
                             <option value="{{ $parent->id }}">{{ $parent->name }}</option>

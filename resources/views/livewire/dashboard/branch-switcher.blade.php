@@ -7,8 +7,8 @@
             <select
                 id="branch-switcher"
                 wire:model.live="selectedBranchId"
-                class="form-input"
-                style="min-width: 10rem; padding: 0.375rem 0.625rem; font-size: 0.875rem;"
+                class="form-select form-select-compact"
+                style="min-width: 10rem; width: auto;"
             >
                 @foreach ($branches as $branch)
                     <option value="{{ $branch->id }}">

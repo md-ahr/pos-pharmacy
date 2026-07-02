@@ -1,13 +1,27 @@
-<nav class="card" style="margin-bottom: 1rem;">
-    <div class="card-body" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-        <a href="{{ route('pharmacy.inventory') }}" class="btn {{ request()->routeIs('pharmacy.inventory') ? 'btn-primary' : 'btn-ghost' }}">Overview</a>
-        <a href="{{ route('pharmacy.inventory.products') }}" class="btn {{ request()->routeIs('pharmacy.inventory.products*') ? 'btn-primary' : 'btn-ghost' }}">Products</a>
-        <a href="{{ route('pharmacy.inventory.categories') }}" class="btn {{ request()->routeIs('pharmacy.inventory.categories*') ? 'btn-primary' : 'btn-ghost' }}">Categories</a>
-        <a href="{{ route('pharmacy.inventory.manufacturers') }}" class="btn {{ request()->routeIs('pharmacy.inventory.manufacturers*') ? 'btn-primary' : 'btn-ghost' }}">Manufacturers</a>
-        <a href="{{ route('pharmacy.inventory.batch-intake') }}" class="btn {{ request()->routeIs('pharmacy.inventory.batch-intake') ? 'btn-primary' : 'btn-ghost' }}">Batch Intake</a>
-        <a href="{{ route('pharmacy.inventory.suppliers') }}" class="btn {{ request()->routeIs('pharmacy.inventory.suppliers*') ? 'btn-primary' : 'btn-ghost' }}">Suppliers</a>
-        <a href="{{ route('pharmacy.inventory.purchase-orders') }}" class="btn {{ request()->routeIs('pharmacy.inventory.purchase-orders*') ? 'btn-primary' : 'btn-ghost' }}">Purchase Orders</a>
-        <a href="{{ route('pharmacy.inventory.adjustments') }}" class="btn {{ request()->routeIs('pharmacy.inventory.adjustments') ? 'btn-primary' : 'btn-ghost' }}">Adjustments</a>
-        <a href="{{ route('pharmacy.inventory.transfers') }}" class="btn {{ request()->routeIs('pharmacy.inventory.transfers') ? 'btn-primary' : 'btn-ghost' }}">Transfers</a>
+@php
+    $links = [
+        ['route' => 'pharmacy.inventory', 'label' => 'Overview', 'pattern' => 'pharmacy.inventory'],
+        ['route' => 'pharmacy.inventory.products', 'label' => 'Products', 'pattern' => 'pharmacy.inventory.products*'],
+        ['route' => 'pharmacy.inventory.categories', 'label' => 'Categories', 'pattern' => 'pharmacy.inventory.categories*'],
+        ['route' => 'pharmacy.inventory.manufacturers', 'label' => 'Manufacturers', 'pattern' => 'pharmacy.inventory.manufacturers*'],
+        ['route' => 'pharmacy.inventory.batch-intake', 'label' => 'Batch Intake', 'pattern' => 'pharmacy.inventory.batch-intake'],
+        ['route' => 'pharmacy.inventory.suppliers', 'label' => 'Suppliers', 'pattern' => 'pharmacy.inventory.suppliers*'],
+        ['route' => 'pharmacy.inventory.purchase-orders', 'label' => 'Purchase Orders', 'pattern' => 'pharmacy.inventory.purchase-orders*'],
+        ['route' => 'pharmacy.inventory.adjustments', 'label' => 'Adjustments', 'pattern' => 'pharmacy.inventory.adjustments'],
+        ['route' => 'pharmacy.inventory.transfers', 'label' => 'Transfers', 'pattern' => 'pharmacy.inventory.transfers'],
+    ];
+@endphp
+
+<nav class="card" style="margin-bottom: 1rem;" aria-label="Inventory navigation">
+    <div class="card-body" style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.375rem; padding: 0.75rem 1rem;">
+        <span style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted-foreground); margin-right: 0.5rem;">Inventory</span>
+        @foreach ($links as $link)
+            <a
+                href="{{ route($link['route']) }}"
+                class="btn btn-sm {{ request()->routeIs($link['pattern']) ? 'btn-primary' : 'btn-ghost' }}"
+            >
+                {{ $link['label'] }}
+            </a>
+        @endforeach
     </div>
 </nav>

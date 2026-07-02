@@ -23,6 +23,8 @@
                         <th>Name</th>
                         <th>SKU</th>
                         <th>Category</th>
+                        <th>Cost</th>
+                        <th>Sell Price</th>
                         <th>Base Unit</th>
                         <th>Reorder</th>
                         <th>Status</th>
@@ -31,6 +33,10 @@
                 </thead>
                 <tbody>
                     @forelse($products as $product)
+                        @php
+                            $defaultUnit = $product->units->firstWhere('is_default', true) ?? $product->units->first();
+                            $latestBatch = $product->batches->sortByDesc(fn ($batch) => $batch->received_at?->getTimestamp() ?? 0)->first();
+                        @endphp
                         <tr>
                             <td>
                                 <strong>{{ $product->name }}</strong>
@@ -40,6 +46,8 @@
                             </td>
                             <td>{{ $product->sku ?? '—' }}</td>
                             <td>{{ $product->category?->name ?? '—' }}</td>
+                            <td>{{ $latestBatch ? number_format((float) $latestBatch->cost_price, 2) : '—' }}</td>
+                            <td>{{ $defaultUnit?->selling_price !== null ? number_format((float) $defaultUnit->selling_price, 2) : '—' }}</td>
                             <td>{{ $product->base_unit }}</td>
                             <td>{{ $product->reorder_level }}</td>
                             <td>
@@ -55,7 +63,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-muted">No products found.</td>
+                            <td colspan="9" class="text-muted">No products found.</td>
                         </tr>
                     @endforelse
                 </tbody>

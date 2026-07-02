@@ -66,6 +66,7 @@ class CheckoutService
             $tenant = Tenant::query()->findOrFail($branch->tenant_id);
             $pricedLines = $this->priceLines($branch, $lines);
             $totals = $this->calculateTotals($branch, $pricedLines, $lines, $saleDiscount);
+            $lineAmounts = $this->allocateLineAmounts($pricedLines, $lines, $saleDiscount, $totals['net'], $totals['tax']);
 
             $this->assertPaymentsCoverTotal($payments, $totals['total']);
 
@@ -106,13 +107,12 @@ class CheckoutService
                 $product = $pricedLine['product'];
                 $unit = $pricedLine['unit'];
                 $quantityBase = $this->unitConversion->toBaseUnits($product, $unit, $cartLine->quantity);
+                $lineAmount = $lineAmounts[$index];
                 $overrideBatch = $cartLine->batchId !== null
                     ? Batch::query()->findOrFail($cartLine->batchId)
                     : null;
 
                 $deductions = $this->stockDeduction->deduct($branch, $product, $quantityBase, $overrideBatch);
-                $lineNet = bcsub($pricedLine['line_subtotal'], $cartLine->lineDiscount, 2);
-                $lineTax = $this->proportionalTax($lineNet, $totals['net'], $totals['tax']);
 
                 if ($deductions->count() === 1) {
                     SaleItem::query()->create([
@@ -123,26 +123,26 @@ class CheckoutService
                         'quantity' => $cartLine->quantity,
                         'quantity_base' => $quantityBase,
                         'unit_price' => $pricedLine['unit_price'],
-                        'discount_amount' => $cartLine->lineDiscount,
-                        'tax_amount' => $lineTax,
-                        'line_total' => bcadd($lineNet, $lineTax, 2),
+                        'discount_amount' => $lineAmount['discount_amount'],
+                        'tax_amount' => $lineAmount['tax_amount'],
+                        'line_total' => $lineAmount['line_total'],
                         'is_prescription_item' => $cartLine->isPrescriptionItem,
                     ]);
 
                     continue;
                 }
 
-                $remainingDiscount = $cartLine->lineDiscount;
-                $remainingTax = $lineTax;
+                $remainingDiscount = $lineAmount['discount_amount'];
+                $remainingTax = $lineAmount['tax_amount'];
 
                 foreach ($deductions as $deductionIndex => $deduction) {
                     $isLast = $deductionIndex === $deductions->count() - 1;
                     $portionDiscount = $isLast
                         ? $remainingDiscount
-                        : bcmul(bcdiv((string) $deduction->quantityDeducted, (string) $quantityBase, 6), $cartLine->lineDiscount, 2);
+                        : bcmul(bcdiv((string) $deduction->quantityDeducted, (string) $quantityBase, 6), $lineAmount['discount_amount'], 2);
                     $portionTax = $isLast
                         ? $remainingTax
-                        : bcmul(bcdiv((string) $deduction->quantityDeducted, (string) $quantityBase, 6), $lineTax, 2);
+                        : bcmul(bcdiv((string) $deduction->quantityDeducted, (string) $quantityBase, 6), $lineAmount['tax_amount'], 2);
                     $portionSubtotal = bcmul($pricedLine['unit_price'], bcdiv((string) $deduction->quantityDeducted, (string) max($unit?->conversion_factor ?? 1, 1), 6), 2);
                     $portionNet = bcsub($portionSubtotal, $portionDiscount, 2);
 
@@ -217,6 +217,7 @@ class CheckoutService
             $tenant = Tenant::query()->findOrFail($branch->tenant_id);
             $pricedLines = $this->priceLines($branch, $lines);
             $totals = $this->calculateTotals($branch, $pricedLines, $lines, $saleDiscount);
+            $lineAmounts = $this->allocateLineAmounts($pricedLines, $lines, $saleDiscount, $totals['net'], $totals['tax']);
 
             $sale = Sale::query()->create([
                 'tenant_id' => $tenant->id,
@@ -242,8 +243,7 @@ class CheckoutService
                 $product = $pricedLine['product'];
                 $unit = $pricedLine['unit'];
                 $batch = $pricedLine['batch'];
-                $lineNet = bcsub($pricedLine['line_subtotal'], $cartLine->lineDiscount, 2);
-                $lineTax = $this->proportionalTax($lineNet, $totals['net'], $totals['tax']);
+                $lineAmount = $lineAmounts[$index];
 
                 SaleItem::query()->create([
                     'sale_id' => $sale->id,
@@ -253,9 +253,9 @@ class CheckoutService
                     'quantity' => $cartLine->quantity,
                     'quantity_base' => $this->unitConversion->toBaseUnits($product, $unit, $cartLine->quantity),
                     'unit_price' => $pricedLine['unit_price'],
-                    'discount_amount' => $cartLine->lineDiscount,
-                    'tax_amount' => $lineTax,
-                    'line_total' => bcadd($lineNet, $lineTax, 2),
+                    'discount_amount' => $lineAmount['discount_amount'],
+                    'tax_amount' => $lineAmount['tax_amount'],
+                    'line_total' => $lineAmount['line_total'],
                     'is_prescription_item' => $cartLine->isPrescriptionItem,
                 ]);
             }
@@ -402,6 +402,59 @@ class CheckoutService
         }
 
         return bcmul(bcdiv($lineNet, $saleNet, 6), $saleTax, 2);
+    }
+
+    /**
+     * @param  list<array{line_subtotal: string}>  $pricedLines
+     * @param  list<CartLine>  $cartLines
+     * @return list<array{discount_amount: string, tax_amount: string, line_total: string}>
+     */
+    private function allocateLineAmounts(array $pricedLines, array $cartLines, string $saleDiscount, string $saleNet, string $saleTax): array
+    {
+        $lineAmounts = [];
+        $remainingSaleDiscount = $saleDiscount;
+        $remainingTax = $saleTax;
+        $saleNetBeforeSaleDiscount = bcadd($saleNet, $saleDiscount, 2);
+        $lastIndex = array_key_last($pricedLines);
+
+        foreach ($pricedLines as $index => $pricedLine) {
+            $lineNetBeforeSaleDiscount = bcsub($pricedLine['line_subtotal'], $cartLines[$index]->lineDiscount, 2);
+
+            if ($index === $lastIndex) {
+                $allocatedSaleDiscount = $remainingSaleDiscount;
+            } elseif (bccomp($saleNetBeforeSaleDiscount, '0.00', 2) <= 0 || bccomp($remainingSaleDiscount, '0.00', 2) <= 0) {
+                $allocatedSaleDiscount = '0.00';
+            } else {
+                $allocatedSaleDiscount = bcmul(
+                    bcdiv($lineNetBeforeSaleDiscount, $saleNetBeforeSaleDiscount, 6),
+                    $saleDiscount,
+                    2,
+                );
+            }
+
+            $lineNet = bcsub($lineNetBeforeSaleDiscount, $allocatedSaleDiscount, 2);
+
+            if (bccomp($lineNet, '0.00', 2) < 0) {
+                $lineNet = '0.00';
+            }
+
+            if ($index === $lastIndex) {
+                $lineTax = $remainingTax;
+            } else {
+                $lineTax = $this->proportionalTax($lineNet, $saleNet, $saleTax);
+            }
+
+            $lineAmounts[] = [
+                'discount_amount' => bcadd($cartLines[$index]->lineDiscount, $allocatedSaleDiscount, 2),
+                'tax_amount' => $lineTax,
+                'line_total' => bcadd($lineNet, $lineTax, 2),
+            ];
+
+            $remainingSaleDiscount = bcsub($remainingSaleDiscount, $allocatedSaleDiscount, 2);
+            $remainingTax = bcsub($remainingTax, $lineTax, 2);
+        }
+
+        return $lineAmounts;
     }
 
     private function assertHeldSale(Sale $sale, Branch $branch): void

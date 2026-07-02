@@ -3,22 +3,33 @@
 namespace App\Livewire\Inventory;
 
 use App\Enums\PurchaseOrderStatus;
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\PurchaseOrder;
+use App\Services\BranchContext;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class PurchaseOrdersIndex extends Component
 {
+    use ListensForBranchSwitch;
     use WithPagination;
 
     public string $statusFilter = '';
 
-    public function render(): View
+    protected function refreshAfterBranchSwitch(): void
     {
+        $this->resetPage();
+    }
+
+    public function render(BranchContext $branchContext): View
+    {
+        $branchId = $branchContext->activeBranchId();
+
         $orders = PurchaseOrder::query()
             ->with(['supplier', 'branch'])
-            ->when($this->statusFilter !== '', fn ($q) => $q->where('status', $this->statusFilter))
+            ->when($branchId !== null, fn ($query) => $query->where('branch_id', $branchId))
+            ->when($this->statusFilter !== '', fn ($query) => $query->where('status', $this->statusFilter))
             ->latest()
             ->paginate(15);
 

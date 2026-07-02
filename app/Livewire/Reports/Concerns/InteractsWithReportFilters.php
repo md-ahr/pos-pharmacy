@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Services\BranchContext;
 use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
 
 trait InteractsWithReportFilters
 {
@@ -25,12 +26,20 @@ trait InteractsWithReportFilters
 
     public function mountReportFilters(): void
     {
-        $branchContext = app(BranchContext::class);
-        $activeBranchId = $branchContext->activeBranchId();
-
         $this->from = today()->startOfMonth()->toDateString();
         $this->to = today()->toDateString();
+        $this->syncActiveBranchFilter();
+    }
+
+    #[On('branch-switched')]
+    public function syncActiveBranchFilter(): void
+    {
+        $activeBranchId = app(BranchContext::class)->activeBranchId();
         $this->branchId = $activeBranchId !== null ? (string) $activeBranchId : '';
+
+        if (method_exists($this, 'resetPage')) {
+            $this->resetPage();
+        }
     }
 
     public function resetReportFilters(): void

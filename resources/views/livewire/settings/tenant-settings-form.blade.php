@@ -28,7 +28,7 @@
                 </div>
                 <div>
                     <label class="form-label">Default Branch</label>
-                    <select wire:model="defaultBranchId" class="form-input">
+                    <select wire:model="defaultBranchId" class="form-select">
                         <option value="">No default</option>
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>

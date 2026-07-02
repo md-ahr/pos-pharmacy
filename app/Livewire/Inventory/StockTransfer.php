@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Inventory;
 
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Batch;
 use App\Models\Branch;
 use App\Models\Product;
@@ -12,6 +13,8 @@ use Livewire\Component;
 
 class StockTransfer extends Component
 {
+    use ListensForBranchSwitch;
+
     public ?int $to_branch_id = null;
 
     public ?int $product_id = null;
@@ -21,6 +24,11 @@ class StockTransfer extends Component
     public int $quantity = 0;
 
     public string $notes = '';
+
+    protected function refreshAfterBranchSwitch(): void
+    {
+        $this->reset(['to_branch_id', 'product_id', 'batch_id', 'quantity', 'notes']);
+    }
 
     public function updatedProductId(): void
     {

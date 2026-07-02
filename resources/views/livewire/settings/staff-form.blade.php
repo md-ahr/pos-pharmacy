@@ -27,7 +27,7 @@
                 </div>
                 <div>
                     <label class="form-label">Role</label>
-                    <select wire:model.live="role" class="form-input">
+                    <select wire:model.live="role" class="form-select">
                         @foreach($roles as $roleOption)
                             <option value="{{ $roleOption->value }}">{{ ucfirst($roleOption->value) }}</option>
                         @endforeach
@@ -36,7 +36,7 @@
                 </div>
                 <div>
                     <label class="form-label">Branch</label>
-                    <select wire:model="branchId" class="form-input" @if(in_array($role, ['owner', 'manager'], true)) disabled @endif>
+                    <select wire:model="branchId" class="form-select" @if(in_array($role, ['owner', 'manager'], true)) disabled @endif>
                         <option value="">All branches</option>
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>

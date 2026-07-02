@@ -10,7 +10,7 @@
 
     <div class="card" style="margin-bottom: 1rem;">
         <div class="card-body">
-            <select wire:model.live="statusFilter" class="form-input" style="max-width: 220px;">
+            <select wire:model.live="statusFilter" class="form-select" style="max-width: 220px;">
                 <option value="">All statuses</option>
                 @foreach($statuses as $status)
                     <option value="{{ $status->value }}">{{ ucfirst($status->value) }}</option>

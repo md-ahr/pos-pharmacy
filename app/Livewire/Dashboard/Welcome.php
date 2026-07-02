@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\User;
@@ -10,13 +11,11 @@ use App\Services\RegisterShiftService;
 use App\Services\Reports\DashboardMetricsService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
-use Livewire\Attributes\On;
 use Livewire\Component;
 
 class Welcome extends Component
 {
-    #[On('branch-switched')]
-    public function refreshDashboard(): void {}
+    use ListensForBranchSwitch;
 
     public function render(
         BranchContext $branchContext,

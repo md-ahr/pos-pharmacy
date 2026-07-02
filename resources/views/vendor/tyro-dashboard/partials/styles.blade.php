@@ -1112,13 +1112,25 @@
         min-height: 80px;
     }
 
+    /* Native select — custom chevron, consistent padding */
+    select.form-input,
     .form-select {
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2371717a'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+        padding-right: 2.75rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2371717a' stroke-width='2.25'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 0.5rem center;
+        background-position: right 0.875rem center;
         background-size: 1rem;
-        padding-right: 2rem;
+    }
+
+    .form-select-compact {
+        padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        background-position: right 0.625rem center;
+        background-size: 0.9375rem;
     }
 
     /* Modern select component wrapper */
@@ -1132,6 +1144,18 @@
         position: relative;
         display: flex;
         align-items: center;
+    }
+
+    .tyro-select-control::after {
+        content: '';
+        position: absolute;
+        right: 0.875rem;
+        top: 50%;
+        width: 1rem;
+        height: 1rem;
+        transform: translateY(-50%);
+        pointer-events: none;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2371717a' stroke-width='2.25'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
     }
 
     .tyro-select-control > .tyro-select-leading {
@@ -1153,8 +1177,8 @@
 
     .tyro-select .form-select {
         cursor: pointer;
-        padding-right: 2.5rem;
-        background-position: right 0.75rem center;
+        padding-right: 2.75rem;
+        background-image: none;
     }
 
     .tyro-select .form-select:disabled {
@@ -1163,13 +1187,15 @@
         background-color: var(--muted);
     }
 
-    .tyro-select-sm .form-select { padding: 0.4rem 2rem 0.4rem 0.75rem; font-size: 0.8125rem; }
+    .tyro-select-sm .form-select { padding: 0.4rem 2.25rem 0.4rem 0.75rem; font-size: 0.8125rem; }
     .tyro-select-sm.has-leading .form-select { padding-left: 2.25rem; }
     .tyro-select-sm .tyro-select-leading { left: 0.6rem; }
     .tyro-select-sm .tyro-select-leading svg { width: 15px; height: 15px; }
+    .tyro-select-sm .tyro-select-control::after { right: 0.625rem; width: 0.9375rem; height: 0.9375rem; }
 
-    .tyro-select-lg .form-select { padding: 0.85rem 2.5rem 0.85rem 1rem; font-size: 1rem; }
+    .tyro-select-lg .form-select { padding: 0.85rem 2.75rem 0.85rem 1rem; font-size: 1rem; }
     .tyro-select-lg.has-leading .form-select { padding-left: 2.75rem; }
+    .tyro-select-lg .tyro-select-control::after { right: 1rem; width: 1.125rem; height: 1.125rem; }
 
     /* Modern multi-select (chips + checkbox popover) */
     .tyro-select-multi {
@@ -1179,13 +1205,14 @@
     }
 
     .tyro-multi-trigger {
+        position: relative;
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 0.375rem;
         min-height: 2.75rem;
         width: 100%;
-        padding: 0.375rem 0.625rem;
+        padding: 0.375rem 2.5rem 0.375rem 0.75rem;
         font-size: 0.9375rem;
         font-family: inherit;
         line-height: 1.5;
@@ -1265,13 +1292,17 @@
     }
 
     .tyro-multi-chevron {
+        position: absolute;
+        right: 0.875rem;
+        top: 50%;
+        transform: translateY(-50%);
         flex-shrink: 0;
-        margin-left: 0.25rem;
+        margin: 0;
         color: var(--muted-foreground);
         transition: transform 0.15s ease;
     }
-    .tyro-multi-chevron svg { width: 16px; height: 16px; display: block; }
-    .tyro-select-multi.is-open .tyro-multi-chevron { transform: rotate(180deg); }
+    .tyro-multi-chevron svg { width: 1rem; height: 1rem; display: block; }
+    .tyro-select-multi.is-open .tyro-multi-chevron { transform: translateY(-50%) rotate(180deg); }
 
     .tyro-multi-menu {
         position: absolute;

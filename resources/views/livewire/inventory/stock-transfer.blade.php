@@ -19,7 +19,7 @@
             <div class="card-body" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
                 <div>
                     <label class="form-label">To Branch</label>
-                    <select wire:model="to_branch_id" class="form-input">
+                    <select wire:model="to_branch_id" class="form-select">
                         <option value="">Select branch...</option>
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <label class="form-label">Product</label>
-                    <select wire:model.live="product_id" class="form-input">
+                    <select wire:model.live="product_id" class="form-select">
                         <option value="">Select product...</option>
                         @foreach($products as $product)
                             <option value="{{ $product->id }}">{{ $product->name }}</option>
@@ -39,7 +39,7 @@
                 </div>
                 <div>
                     <label class="form-label">Batch</label>
-                    <select wire:model="batch_id" class="form-input" @disabled(!$product_id)>
+                    <select wire:model="batch_id" class="form-select" @disabled(!$product_id)>
                         <option value="">Select batch...</option>
                         @foreach($batches as $batch)
                             <option value="{{ $batch->id }}">{{ $batch->batch_no }} (exp {{ $batch->expiry_date->format('Y-m-d') }})</option>

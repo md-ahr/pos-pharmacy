@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Branch;
 use App\Models\RegisterShift;
 use App\Services\BranchContext;
@@ -13,6 +14,7 @@ use Livewire\WithPagination;
 
 class RegisterShiftManager extends Component
 {
+    use ListensForBranchSwitch;
     use WithPagination;
 
     public string $openingFloat = '0.00';
@@ -20,6 +22,14 @@ class RegisterShiftManager extends Component
     public string $countedCash = '0.00';
 
     public string $closeNotes = '';
+
+    protected function refreshAfterBranchSwitch(): void
+    {
+        $this->resetPage();
+        $this->openingFloat = '0.00';
+        $this->countedCash = '0.00';
+        $this->closeNotes = '';
+    }
 
     public function openShift(RegisterShiftService $shiftService, BranchContext $branchContext): void
     {

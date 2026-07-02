@@ -116,6 +116,30 @@ test('profit margin report calculates cost and revenue from batch cost price', f
         ->assertSee($product->name);
 });
 
+test('profit margin report subtracts sale discount from revenue', function () {
+    ['tenant' => $tenant, 'branch' => $branch, 'user' => $user] = createPharmacyContext();
+    $product = seedCheckoutProduct($tenant, $branch);
+
+    $sale = app(CheckoutService::class)->complete(
+        branch: $branch,
+        cashier: $user,
+        lines: [new CartLine(productId: $product->id, productUnitId: null, quantity: 5)],
+        payments: [new PaymentLine(PaymentMethod::Cash, '345.00')],
+        saleDiscount: '25.00',
+    );
+
+    $filters = ReportFilters::fromArray([
+        'from' => now()->subDay()->toDateString(),
+        'to' => now()->addDay()->toDateString(),
+        'branch_id' => $branch->id,
+    ]);
+
+    $rows = app(ProfitMarginReportService::class)->rows($filters);
+
+    expect($rows)->toHaveCount(1)
+        ->and($rows->first()->revenue)->toBe($sale->total);
+});
+
 test('owner can export sales report as pdf and excel', function () {
     createPharmacyContext();
 

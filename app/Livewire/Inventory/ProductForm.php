@@ -37,6 +37,8 @@ class ProductForm extends Component
     /** @var array<int, array{unit_name: string, conversion_factor: int, barcode: string, selling_price: string, is_default: bool}> */
     public array $units = [];
 
+    public ?string $latestBatchCostPrice = null;
+
     public function mount(?Product $product = null): void
     {
         $this->product = $product;
@@ -61,6 +63,15 @@ class ProductForm extends Component
             'requires_prescription' => $product->requires_prescription,
             'is_active' => $product->is_active,
         ]);
+
+        $latestBatch = $product->batches()
+            ->latest('received_at')
+            ->latest('id')
+            ->first();
+
+        $this->latestBatchCostPrice = $latestBatch?->cost_price !== null
+            ? number_format((float) $latestBatch->cost_price, 2, '.', '')
+            : null;
 
         $this->units = $product->units->map(fn (ProductUnit $unit) => [
             'unit_name' => $unit->unit_name,
@@ -165,6 +176,7 @@ class ProductForm extends Component
         return view('livewire.inventory.product-form', [
             'categories' => Category::query()->orderBy('name')->get(),
             'manufacturers' => Manufacturer::query()->orderBy('name')->get(),
+            'latestBatchCostPrice' => $this->latestBatchCostPrice,
         ])->layout('layouts.pharmacy', [
             'title' => $this->product ? 'Edit Product' : 'Add Product',
             'nav' => 'inventory',

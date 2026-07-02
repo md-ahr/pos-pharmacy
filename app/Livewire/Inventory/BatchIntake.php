@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Inventory;
 
+use App\Livewire\Concerns\ListensForBranchSwitch;
 use App\Models\Product;
 use App\Services\BranchContext;
 use App\Services\StockIntakeService;
@@ -10,6 +11,8 @@ use Livewire\Component;
 
 class BatchIntake extends Component
 {
+    use ListensForBranchSwitch;
+
     public ?int $product_id = null;
 
     public string $batch_no = '';
@@ -21,6 +24,11 @@ class BatchIntake extends Component
     public string $selling_price = '';
 
     public int $quantity = 0;
+
+    protected function refreshAfterBranchSwitch(): void
+    {
+        $this->reset(['product_id', 'batch_no', 'expiry_date', 'cost_price', 'selling_price', 'quantity']);
+    }
 
     public function save(StockIntakeService $stockIntake, BranchContext $branchContext): void
     {

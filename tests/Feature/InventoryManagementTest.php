@@ -7,6 +7,7 @@ use App\Models\Branch;
 use App\Models\Category;
 use App\Models\Manufacturer;
 use App\Models\Product;
+use App\Models\ProductUnit;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Services\PurchaseOrderService;
@@ -33,6 +34,36 @@ test('owner can access inventory screens', function () {
     $this->get(route('pharmacy.inventory.purchase-orders'))->assertOk();
 });
 
+test('products index shows cost and sell price columns', function () {
+    ['tenant' => $tenant] = createPharmacyContext();
+
+    $product = Product::factory()->forTenant($tenant)->create([
+        'name' => 'Ibuprofen 200mg',
+        'sku' => 'IBU-200',
+    ]);
+
+    ProductUnit::factory()->create([
+        'product_id' => $product->id,
+        'unit_name' => 'tablet',
+        'conversion_factor' => 1,
+        'selling_price' => '12.50',
+        'is_default' => true,
+    ]);
+
+    Batch::factory()->forProduct($product)->create([
+        'tenant_id' => $tenant->id,
+        'cost_price' => '8.75',
+        'received_at' => now(),
+    ]);
+
+    $this->get(route('pharmacy.inventory.products'))
+        ->assertOk()
+        ->assertSee('Cost')
+        ->assertSee('Sell Price')
+        ->assertSee('8.75')
+        ->assertSee('12.50');
+});
+
 test('product form creates product with units', function () {
     ['tenant' => $tenant] = createPharmacyContext();
     $category = Category::factory()->create(['tenant_id' => $tenant->id]);
@@ -56,6 +87,37 @@ test('product form creates product with units', function () {
 
     expect($product)->not->toBeNull()
         ->and($product->units)->toHaveCount(2);
+});
+
+test('product form explains sell price against latest batch cost', function () {
+    ['tenant' => $tenant] = createPharmacyContext();
+
+    $product = Product::factory()->forTenant($tenant)->create([
+        'name' => 'Insulin Pen',
+        'base_unit' => 'unit',
+    ]);
+
+    ProductUnit::factory()->create([
+        'product_id' => $product->id,
+        'unit_name' => 'pack',
+        'conversion_factor' => 1,
+        'selling_price' => '65.00',
+        'is_default' => true,
+    ]);
+
+    Batch::factory()->forProduct($product)->create([
+        'tenant_id' => $tenant->id,
+        'cost_price' => '35.00',
+        'received_at' => now(),
+    ]);
+
+    Livewire::test(ProductForm::class, ['product' => $product])
+        ->assertSee('Pricing Guide')
+        ->assertSee('Latest batch cost for 1 unit')
+        ->assertSee('35.00')
+        ->assertSee('Selling Price (per pack)')
+        ->assertSee('Profit:')
+        ->assertSee('30.00');
 });
 
 test('batch intake increases branch stock', function () {
