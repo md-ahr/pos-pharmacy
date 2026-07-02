@@ -10,6 +10,7 @@ use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,14 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('registration', function (Request $request): Limit {
             return Limit::perMinute(config('pharmacy.rate_limits.registration_per_minute', 5))
                 ->by($request->ip());
+        });
+
+        Blade::directive('displayDatetime', function (string $expression): string {
+            return "<?php echo e(\\App\\Support\\DisplayDateTime::format($expression)); ?>";
+        });
+
+        Blade::directive('displayTime', function (string $expression): string {
+            return "<?php echo e(\\App\\Support\\DisplayDateTime::time($expression)); ?>";
         });
 
         View::composer(

@@ -38,4 +38,9 @@ return [
         'sentry_dsn' => env('SENTRY_LARAVEL_DSN'),
     ],
 
+    'display' => [
+        'datetime' => 'M j, Y g:i A',
+        'time' => 'g:i A',
+    ],
+
 ];

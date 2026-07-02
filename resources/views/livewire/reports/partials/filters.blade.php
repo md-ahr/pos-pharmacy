@@ -8,14 +8,8 @@
     style="margin-bottom: 1rem;"
 >
     <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
-        <div>
-            <label class="form-label" for="{{ $inputId('from') }}">From</label>
-            <input type="date" id="{{ $inputId('from') }}" wire:model.live="from" class="form-input">
-        </div>
-        <div>
-            <label class="form-label" for="{{ $inputId('to') }}">To</label>
-            <input type="date" id="{{ $inputId('to') }}" wire:model.live="to" class="form-input">
-        </div>
+        <x-date-picker label="From" :id="$inputId('from')" wire:model.live="from" />
+        <x-date-picker label="To" :id="$inputId('to')" wire:model.live="to" />
         <div>
             <label class="form-label" for="{{ $inputId('branch') }}">Branch</label>
             <select id="{{ $inputId('branch') }}" wire:model.live="branchId" class="form-select">

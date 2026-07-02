@@ -56,7 +56,7 @@
             <form wire:submit="closeShift" class="card">
                 <div class="card-header"><h2 class="card-title">Close Shift</h2></div>
                 <div class="card-body" style="display: grid; gap: 1rem;">
-                    <p class="text-muted">Opened {{ $summary['shift']->opened_at->format('Y-m-d H:i') }} by {{ $summary['shift']->openedBy->name }}</p>
+                    <p class="text-muted">Opened @displayDatetime($summary['shift']->opened_at) by {{ $summary['shift']->openedBy->name }}</p>
                     <div>
                         <label class="form-label">Counted Cash</label>
                         <input type="number" step="0.01" min="0" wire:model="countedCash" class="form-input">
@@ -91,8 +91,8 @@
                 <tbody>
                     @forelse($recentShifts as $shift)
                         <tr>
-                            <td>{{ $shift->opened_at->format('Y-m-d H:i') }}</td>
-                            <td>{{ $shift->closed_at?->format('Y-m-d H:i') ?? '—' }}</td>
+                            <td>@displayDatetime($shift->opened_at)</td>
+                            <td>@displayDatetime($shift->closed_at)</td>
                             <td>{{ $shift->opening_float }}</td>
                             <td>{{ $shift->expected_cash ?? '—' }}</td>
                             <td>{{ $shift->counted_cash ?? '—' }}</td>

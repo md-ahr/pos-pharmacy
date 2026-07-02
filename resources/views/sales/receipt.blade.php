@@ -115,7 +115,7 @@
                 <p>{{ $sale->branch->address }}</p>
             @endif
             <p><strong>Invoice:</strong> {{ $sale->invoice_no }}</p>
-            <p><strong>Date:</strong> {{ $sale->sold_at?->format('Y-m-d H:i') }}</p>
+            <p><strong>Date:</strong> @displayDatetime($sale->sold_at)</p>
             <p><strong>Cashier:</strong> {{ $sale->cashier->name }}</p>
         </div>
 

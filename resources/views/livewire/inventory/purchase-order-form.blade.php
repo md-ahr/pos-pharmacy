@@ -124,7 +124,7 @@
     @if($purchaseOrder && $purchaseOrder->status === \App\Enums\PurchaseOrderStatus::Received)
         <div class="card" style="margin-top: 1rem;">
             <div class="card-body text-muted">
-                Received on {{ $purchaseOrder->received_at?->format('Y-m-d H:i') }}.
+                Received on @displayDatetime($purchaseOrder->received_at).
             </div>
         </div>
     @endif

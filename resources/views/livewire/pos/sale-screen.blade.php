@@ -131,7 +131,7 @@
                             <div>
                                 <strong>{{ $recent->invoice_no }}</strong>
                                 <div class="text-muted" style="font-size:0.875rem;">
-                                    {{ $recent->sold_at?->format('Y-m-d H:i') }} · {{ $recent->status->value }}
+                                    @displayDatetime($recent->sold_at) · {{ $recent->status->value }}
                                 </div>
                             </div>
                             <div style="display:flex; gap:0.5rem;">

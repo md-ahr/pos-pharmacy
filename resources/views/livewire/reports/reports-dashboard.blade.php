@@ -6,7 +6,7 @@
                 <p class="page-description">
                     Today's performance for {{ $branchName ?? 'all branches' }}.
                     @if ($shiftSummary['shift'])
-                        Register shift open since {{ $shiftSummary['shift']->opened_at->format('H:i') }} — expected cash {{ $shiftSummary['expected_cash'] }}.
+                        Register shift open since @displayTime($shiftSummary['shift']->opened_at) — expected cash {{ $shiftSummary['expected_cash'] }}.
                     @else
                         No register shift is open for the active branch.
                     @endif

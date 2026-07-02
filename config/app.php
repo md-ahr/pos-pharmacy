@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\SystemTimezone;
+
 return [
 
     /*
@@ -65,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', SystemTimezone::detect()),
 
     /*
     |--------------------------------------------------------------------------

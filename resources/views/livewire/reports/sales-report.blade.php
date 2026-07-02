@@ -74,7 +74,7 @@
                     @forelse ($sales as $sale)
                         <tr wire:key="sale-{{ $sale->id }}">
                             <td class="font-mono">{{ $sale->invoice_no }}</td>
-                            <td style="white-space: nowrap;">{{ $sale->sold_at?->format('Y-m-d H:i') }}</td>
+                            <td style="white-space: nowrap;">@displayDatetime($sale->sold_at)</td>
                             <td>{{ $sale->branch->name }}</td>
                             <td>{{ $sale->cashier->name }}</td>
                             <td>{{ $sale->customer?->displayName() ?? 'Walk-in' }}</td>
