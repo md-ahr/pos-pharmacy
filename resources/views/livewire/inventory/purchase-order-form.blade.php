@@ -47,7 +47,7 @@
                 </div>
                 <div class="card-body">
                     @foreach($lines as $index => $line)
-                        <div style="display: grid; gap: 0.75rem; grid-template-columns: 2fr 1fr 1fr auto; margin-bottom: 1rem;">
+                        <div class="po-line-grid">
                             <div>
                                 <label class="form-label">Product</label>
                                 <select wire:model="lines.{{ $index }}.product_id" class="form-select">
@@ -66,7 +66,7 @@
                                 <label class="form-label">Unit Cost</label>
                                 <input type="number" step="0.01" wire:model="lines.{{ $index }}.unit_cost" class="form-input">
                             </div>
-                            <div style="display: flex; align-items: end;">
+                            <div class="po-line-remove">
                                 @if(count($lines) > 1)
                                     <button type="button" wire:click="removeLine({{ $index }})" class="btn btn-ghost btn-sm text-destructive">Remove</button>
                                 @endif

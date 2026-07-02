@@ -46,71 +46,75 @@
     @enderror
 
     @if($completedSaleId)
-        <div class="alert alert-success" style="margin-bottom: 1rem; display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+        <div class="alert alert-success alert-row" style="margin-bottom: 1rem;">
             <span>Sale completed successfully.</span>
             <a href="{{ route('pharmacy.pos.receipt', $completedSaleId) }}" target="_blank" class="btn btn-primary btn-sm">Print Receipt</a>
         </div>
     @endif
 
-    <div style="display:grid; grid-template-columns: 1fr 1.2fr; gap: 1rem; align-items:start;">
-        <div style="display:grid; gap:1rem;">
-            <div class="card">
-                <div class="card-body">
-                    <label class="form-label" for="pos-search">Search products (F2)</label>
-                    <input
-                        id="pos-search"
-                        x-ref="searchInput"
-                        type="search"
-                        wire:model.live.debounce.250ms="search"
-                        class="form-input"
-                        placeholder="Name, SKU, generic name, or barcode..."
-                        autocomplete="off"
-                        autofocus
-                    >
-                    <p class="text-muted" style="margin-top:0.5rem; font-size:0.875rem;">Use ↑↓ to navigate, Enter to add. F4 opens checkout.</p>
-                </div>
-            </div>
-
-            @if($search !== '' && $searchResults->isNotEmpty())
+    <div class="pos-layout">
+        <div class="pos-layout-stack pos-layout-sidebar">
+            <div class="pos-mobile-order-search">
                 <div class="card">
-                    <div class="card-header"><h3 class="card-title">Results</h3></div>
-                    <div class="card-body" style="padding:0;">
-                        <table class="table" style="margin:0;">
-                            <tbody>
-                                @foreach($searchResults as $index => $product)
-                                    <tr
-                                        wire:key="search-{{ $product->id }}"
-                                        wire:click="addProduct({{ $product->id }})"
-                                        style="cursor:pointer;"
-                                        :style="highlight === {{ $index }} ? 'background: var(--accent)' : ''"
-                                    >
-                                        <td>
-                                            <strong>{{ $product->name }}</strong>
-                                            @if($product->generic_name)
-                                                <div class="text-muted" style="font-size:0.875rem;">{{ $product->generic_name }}</div>
-                                            @endif
-                                        </td>
-                                        <td class="text-muted">{{ $product->sku }}</td>
-                                        <td>
-                                            @if($product->requires_prescription)
-                                                <span class="badge badge-warning">Rx</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                    <div class="card-body">
+                        <label class="form-label" for="pos-search">Search products (F2)</label>
+                        <input
+                            id="pos-search"
+                            x-ref="searchInput"
+                            type="search"
+                            wire:model.live.debounce.250ms="search"
+                            class="form-input"
+                            placeholder="Name, SKU, generic name, or barcode..."
+                            autocomplete="off"
+                            autofocus
+                        >
+                        <p class="text-muted" style="margin-top:0.5rem; font-size:0.875rem;">Use ↑↓ to navigate, Enter to add. F4 opens checkout.</p>
                     </div>
                 </div>
-            @elseif($search !== '')
-                <div class="card"><div class="card-body text-muted">No products found.</div></div>
-            @endif
 
-            <div class="card">
+                @if($search !== '' && $searchResults->isNotEmpty())
+                    <div class="card" style="margin-top: 1rem;">
+                        <div class="card-header"><h3 class="card-title">Results</h3></div>
+                        <div class="card-body" style="padding:0;">
+                            <div class="table-container">
+                            <table class="table" style="margin:0;">
+                                <tbody>
+                                    @foreach($searchResults as $index => $product)
+                                        <tr
+                                            wire:key="search-{{ $product->id }}"
+                                            wire:click="addProduct({{ $product->id }})"
+                                            style="cursor:pointer;"
+                                            :style="highlight === {{ $index }} ? 'background: var(--accent)' : ''"
+                                        >
+                                            <td>
+                                                <strong>{{ $product->name }}</strong>
+                                                @if($product->generic_name)
+                                                    <div class="text-muted" style="font-size:0.875rem;">{{ $product->generic_name }}</div>
+                                                @endif
+                                            </td>
+                                            <td class="text-muted">{{ $product->sku }}</td>
+                                            <td>
+                                                @if($product->requires_prescription)
+                                                    <span class="badge badge-warning">Rx</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+                    </div>
+                @elseif($search !== '')
+                    <div class="card" style="margin-top: 1rem;"><div class="card-body text-muted">No products found.</div></div>
+                @endif
+            </div>
+
+            <div class="card pos-mobile-order-held">
                 <div class="card-header"><h3 class="card-title">Held Sales</h3></div>
                 <div class="card-body" style="padding:0;">
                     @forelse($heldSales as $held)
-                        <div wire:key="held-{{ $held->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid var(--border);">
+                        <div wire:key="held-{{ $held->id }}" class="pos-list-row">
                             <div>
                                 <strong>{{ $held->invoice_no }}</strong>
                                 <div class="text-muted" style="font-size:0.875rem;">{{ number_format((float) $held->total, 2) }}</div>
@@ -123,18 +127,18 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card pos-mobile-order-recent">
                 <div class="card-header"><h3 class="card-title">Recent Sales</h3></div>
                 <div class="card-body" style="padding:0;">
                     @forelse($recentSales as $recent)
-                        <div wire:key="recent-{{ $recent->id }}" style="display:flex; justify-content:space-between; align-items:center; padding:0.75rem 1rem; border-bottom:1px solid var(--border);">
+                        <div wire:key="recent-{{ $recent->id }}" class="pos-list-row">
                             <div>
                                 <strong>{{ $recent->invoice_no }}</strong>
                                 <div class="text-muted" style="font-size:0.875rem;">
                                     @displayDatetime($recent->sold_at) · {{ $recent->status->value }}
                                 </div>
                             </div>
-                            <div style="display:flex; gap:0.5rem;">
+                            <div class="pos-list-row-actions">
                                 @if($recent->status === \App\Enums\SaleStatus::Completed)
                                     <button type="button" class="btn btn-secondary btn-sm" wire:click="$set('refundSaleId', {{ $recent->id }})">Refund</button>
                                 @endif
@@ -148,22 +152,22 @@
             </div>
         </div>
 
-        <div style="display:grid; gap:1rem;">
-            <div class="card">
+        <div class="pos-layout-stack pos-layout-main">
+            <div class="card pos-mobile-order-customer">
                 <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                     <h3 class="card-title">Customer</h3>
                     <a href="{{ route('pharmacy.customers.create') }}" class="btn btn-ghost btn-sm">New</a>
                 </div>
                 <div class="card-body" style="display:grid; gap:0.75rem;">
                     @if($selectedCustomer)
-                        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+                        <div class="customer-card-row">
                             <div>
                                 <strong>{{ $selectedCustomer->displayName() }}</strong>
                                 @if($selectedCustomer->phone)
                                     <div class="text-muted" style="font-size:0.875rem;">{{ $selectedCustomer->phone }}</div>
                                 @endif
                             </div>
-                            <div style="display:flex; gap:0.5rem;">
+                            <div class="customer-card-actions">
                                 <a href="{{ route('pharmacy.customers.show', $selectedCustomer) }}" class="btn btn-ghost btn-sm">History</a>
                                 <button type="button" class="btn btn-secondary btn-sm" wire:click="clearCustomer">Clear</button>
                             </div>
@@ -204,12 +208,12 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card pos-mobile-order-cart">
                 <div class="card-header"><h3 class="card-title">Cart</h3></div>
                 <div class="card-body" style="padding:0;">
                     @forelse($cart as $line)
                         <div wire:key="cart-{{ $line['key'] }}" style="padding:1rem; border-bottom:1px solid var(--border);">
-                            <div style="display:flex; justify-content:space-between; gap:1rem;">
+                            <div class="pos-list-row" style="padding:0; border-bottom:none;">
                                 <div>
                                     <strong>{{ $line['product_name'] }}</strong>
                                     <div class="text-muted" style="font-size:0.875rem;">Batch {{ $line['batch_no'] }}</div>
@@ -261,7 +265,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card pos-mobile-order-totals">
                 <div class="card-body" style="display:grid; gap:0.75rem;">
                     <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><strong>{{ $totals['subtotal'] }}</strong></div>
                     <div>
@@ -290,8 +294,8 @@
     </div>
 
     @if($showPayment)
-        <div style="position:fixed; inset:0; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; z-index:1000;">
-            <div class="card" style="width:min(520px, 92vw);">
+        <div class="modal-overlay">
+            <div class="card modal-card">
                 <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
                     <h3 class="card-title">Payment</h3>
                     <button type="button" class="btn btn-secondary btn-sm" wire:click="$set('showPayment', false)">Close</button>
@@ -301,7 +305,7 @@
                         <span>Amount due</span><strong>{{ $totals['total'] }}</strong>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.5rem;">
+                    <div class="pos-payment-grid">
                         <div>
                             <label class="form-label">Method</label>
                             <select wire:model="paymentMethod" class="form-select">
@@ -340,8 +344,8 @@
     @endif
 
     @if($refundSaleId)
-        <div style="position:fixed; inset:0; background:rgba(0,0,0,0.45); display:flex; align-items:center; justify-content:center; z-index:1000;">
-            <div class="card" style="width:min(420px, 92vw);">
+        <div class="modal-overlay">
+            <div class="card modal-card-sm">
                 <div class="card-header"><h3 class="card-title">Confirm refund</h3></div>
                 <div class="card-body" style="display:grid; gap:1rem;">
                     <p>Refund this sale and restore stock to the original batches?</p>

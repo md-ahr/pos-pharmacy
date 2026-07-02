@@ -12,9 +12,6 @@
                     @endif
                 </p>
             </div>
-            <div>
-                <livewire:dashboard.branch-switcher />
-            </div>
         </div>
     </div>
 

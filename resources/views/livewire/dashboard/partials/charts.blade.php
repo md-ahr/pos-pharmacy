@@ -15,7 +15,7 @@
         </div>
 
         <div style="border: 1px solid var(--border); border-radius: 10px; padding: 1rem; background: var(--card);">
-            <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.625rem; align-items: stretch;">
+            <div class="chart-revenue-layout">
                 <div style="display: flex; flex-direction: column; justify-content: space-between; height: 180px; padding: 0.25rem 0; font-size: 0.75rem; font-weight: 600; color: var(--foreground); line-height: 1;">
                     @foreach ($charts['revenue_y_ticks'] as $tick)
                         <span>{{ $tick }}</span>
@@ -55,16 +55,16 @@
             <p class="text-muted">No sales in the last 7 days.</p>
         @else
             <div style="border: 1px solid var(--border); border-radius: 10px; padding: 1rem; background: var(--card);">
-                <div style="display:grid; grid-template-columns: repeat(7, 1fr); gap: 0.625rem; align-items: end;">
+                <div class="chart-weekly-bars">
                     @foreach ($charts['weekly_bars'] as $bar)
                         <div style="display:flex; flex-direction: column; gap: 0.375rem; align-items: stretch; min-width: 0;">
-                            <div style="min-height: 1.125rem; text-align: center; font-size: 0.8125rem; font-weight: 700; color: var(--foreground); line-height: 1.125rem;">
+                            <div class="chart-bar-value" style="min-height: 1.125rem; text-align: center; font-size: 0.8125rem; font-weight: 700; color: var(--foreground); line-height: 1.125rem;">
                                 {{ $bar['value'] > 0 ? number_format($bar['value'], 0) : '—' }}
                             </div>
                             <div title="{{ $bar['label'] }}: {{ number_format($bar['value'], 2) }}" style="height: 140px; display:flex; align-items:flex-end;">
                                 <div style="width: 100%; height: {{ max($bar['pct'], $bar['value'] > 0 ? 6 : 0) }}%; background: var(--chart-1); border-radius: 8px 8px 4px 4px; min-height: {{ $bar['value'] > 0 ? '6px' : '2px' }}; opacity: {{ $bar['value'] > 0 ? '1' : '0.35' }}; box-shadow: {{ $bar['value'] > 0 ? 'inset 0 1px 0 color-mix(in srgb, white 25%, transparent)' : 'none' }};"></div>
                             </div>
-                            <div style="font-size: 0.8125rem; font-weight: 600; color: var(--foreground); text-align:center;">{{ $bar['label'] }}</div>
+                            <div class="chart-bar-label" style="font-size: 0.8125rem; font-weight: 600; color: var(--foreground); text-align:center;">{{ $bar['label'] }}</div>
                         </div>
                     @endforeach
                 </div>
@@ -78,7 +78,7 @@
         @if ($charts['payment_donut'] === [])
             <p class="text-muted">No payments recorded in the last 7 days.</p>
         @else
-            <div style="display: grid; grid-template-columns: 140px 1fr; gap: 1.25rem; align-items: center;">
+            <div class="chart-donut-layout">
                 <div style="display:flex; align-items:center; justify-content:center;">
                     <svg viewBox="0 0 42 42" width="132" height="132" style="display:block;">
                         <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="var(--border)" stroke-width="6"></circle>
