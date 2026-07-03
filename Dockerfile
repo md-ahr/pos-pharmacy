@@ -4,6 +4,7 @@ FROM php:8.4-fpm-alpine AS base
 RUN apk add --no-cache \
     nginx \
     supervisor \
+    gettext \
     postgresql-dev \
     libzip-dev \
     zip \
@@ -45,7 +46,8 @@ RUN apk add --no-cache nodejs npm \
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+COPY docker/nginx.conf.template /etc/nginx/http.d/default.conf.template
+COPY docker/php-fpm.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
