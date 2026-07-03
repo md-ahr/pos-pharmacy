@@ -1,2 +1,5 @@
 [deploy]
-preDeployCommand = "php artisan migrate --force && php artisan cache:clear"
+preDeployCommand = "php artisan migrate --force"
+startCommand = "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+
+# Set SKIP_MIGRATIONS=true in Railway env — preDeployCommand runs migrations.
