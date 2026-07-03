@@ -347,7 +347,7 @@ class PharmacySeeder extends Seeder
                 'base_unit' => $item['base_unit'],
                 'reorder_level' => $item['reorder_level'],
                 'requires_prescription' => $item['requires_prescription'] ?? false,
-                'barcode' => fake()->ean13(),
+                'barcode' => '890'.str_pad((string) crc32($item['sku']), 10, '0', STR_PAD_LEFT),
             ]);
 
             ProductUnit::factory()->default()->create([
