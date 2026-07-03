@@ -7,6 +7,7 @@ envsubst '${PORT}' < /etc/nginx/http.d/default.conf.template > /etc/nginx/http.d
 
 if [ "${SKIP_MIGRATIONS:-}" != "true" ]; then
     php artisan migrate --force || echo "WARNING: migrations failed, continuing startup"
+    php artisan db:seed --force || echo "WARNING: seeding failed, continuing startup"
 fi
 
 php artisan config:cache
