@@ -1,5 +1,7 @@
 [deploy]
 preDeployCommand = "php artisan migrate --force"
+healthcheckPath = "/up"
+healthcheckTimeout = 120
 
 # Do NOT set startCommand — it overrides Docker ENTRYPOINT and skips entrypoint.sh,
 # so nginx never binds to Railway's $PORT. The Dockerfile ENTRYPOINT + CMD handle startup.
